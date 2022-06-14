@@ -1,0 +1,33 @@
+.invoices-screen {
+  .top-panel {
+    justify-content: space-between;
+    margin-bottom: 32px;
+
+    .page-title {
+      margin-bottom: 0;
+    }
+  }
+  .nothing-here {
+    margin: 100px auto 0 auto;
+    width: 242px;
+    text-align: center;
+    img {
+      margin-bottom: 40px;
+    }
+    h1 {
+      margin-bottom: 24px;
+    }
+  }
+
+  // .filter-form {
+  //   position: absolute;
+  //   top: 50px;
+  //   right: 30px;
+  //   background-color: #ffff;
+  //   padding: 20px 28px;
+  //   width: 192px;
+  //   border-radius: 8px;
+  //   z-index: 1;
+  //   box-shadow: $shadow;
+  // }
+}

@@ -1,0 +1,80 @@
+.invoice-preview {
+  // background-color: #ffff;
+  padding: 25px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  cursor: pointer;
+  box-shadow: $shadow;
+  @include layout-sm {
+    padding: 15px 25px;
+  }
+
+  &:hover {
+    outline: 1px solid $purple;
+  }
+
+  .row {
+    justify-content: space-between;
+    @include layout-sm {
+      align-items: center;
+    }
+  }
+
+  .col {
+    &--left {
+      display: flex;
+      flex-direction: column;
+      @include layout-sm {
+        flex-direction: row;
+        justify-content: space-between;
+        width: 80%;
+        & > * {
+          width: 100%;
+        }
+      }
+    }
+
+    &--right {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: flex-end;
+      @include layout-sm {
+        flex-direction: row;
+        justify-content: flex-end;
+        align-items: center;
+        gap: 20px;
+        width: 40%;
+      }
+    }
+  }
+  .id {
+    margin-bottom: 24px;
+    @include layout-sm {
+      align-self: center;
+      margin-bottom: 0;
+      width: 60%;
+    }
+  }
+
+  .date {
+    margin-bottom: 8px;
+    @include layout-sm {
+      align-self: center;
+      margin-bottom: 0;
+    }
+  }
+
+  .price {
+    @include layout-sm {
+      max-width: 25%;
+      text-align: end;
+    }
+  }
+
+  .name {
+    @include layout-sm {
+      align-self: center;
+    }
+  }
+}

@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=League+Spartan:wght@300;400;500;600;700&display=swap');
+@import 'variables';
+@import 'mixins';
+
+// text
+
+html {
+  font-size: 62.5%;
+}
+
+img {
+  max-width: 100%;
+}
+
+.container {
+  position: relative;
+  width: 90%;
+  max-width: 1275px;
+  margin: 32px auto;
+}
+
+.row {
+  display: flex;
+  width: 100%;
+}
+
+.text-main {
+  font-size: 1.2rem;
+  font-weight: 300;
+  line-height: 1.5rem;
+  letter-spacing: 0.25px;
+}
+
+.text-alt {
+  font-size: 1.1rem;
+  font-weight: 300;
+  line-height: 1.8rem;
+  letter-spacing: 0.23px;
+}
+
+button,
+input[type='submit'] {
+  @extend .text-main;
+  padding: 1.5rem 2.5rem;
+  border: none;
+  border-radius: 24px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn {
+  &--dropdown {
+    &::after {
+      @include transition(all 500ms ease);
+      position: relative;
+      display: inline-block;
+      padding-left: 20px;
+      width: 8px;
+      height: 6px;
+      content: '';
+      background-image: url('../../public/assets/icons/caret-down.svg');
+      background-repeat: no-repeat;
+      background-size: contain;
+      background-position: center;
+    }
+    &.active::after {
+      @include rotate(180deg);
+    }
+  }
+
+  &--plus {
+    &::before {
+      position: relative;
+      margin: -12px 10px -12px -15px;
+      display: inline-block;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      content: '';
+      background-image: url('../../public/assets/icons/plus.svg');
+      background-color: #ffff;
+      background-repeat: no-repeat;
+      background-size: 10px;
+      background-position: center;
+    }
+  }
+}
+
+// input[type='text'],
+// input[type='password'] {
+//   @extend .text-main;
+//   font-weight: 600;
+//   border: 1px solid $grey-light;
+//   border-radius: 4px;
+//   padding: 1.6rem 2rem;
+//   margin-bottom: 25px;
+// }
