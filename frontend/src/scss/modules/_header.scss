@@ -1,6 +1,4 @@
 .header {
-  // background-color: $slate-light;
-
   .row {
     align-items: center;
     justify-content: space-between;
@@ -35,16 +33,10 @@
     }
   }
 
-  .col {
-    align-self: stretch;
-    display: flex;
-  }
-
   .theme-button,
   .login-button,
   .user-button {
     padding: 0;
-    margin: 0 27px;
     background-color: transparent;
   }
 
@@ -61,10 +53,5 @@
     width: 32px;
     height: 32px;
     align-self: center;
-  }
-
-  .divider {
-    width: 1px;
-    background-color: rgba($slate-lightest, 0.3);
   }
 }

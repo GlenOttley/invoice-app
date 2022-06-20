@@ -3,7 +3,7 @@ import asyncHandler from 'express-async-handler'
 import Invoice from '../models/invoiceModel'
 import { IInvoiceDB } from '../interfaces/invoiceInterface'
 import generateID from '../utils/generateID'
-import addDays from '../utils/addDays'
+import calculateDueDate from '../utils/calculateDueDate'
 import calculateTotal from '../utils/calculateTotal'
 
 // @desc    Fetch all invoices
@@ -45,12 +45,7 @@ const getMyInvoices = asyncHandler(
     const invoices: IInvoiceDB[] = await Invoice.find({
       sender: req.user._id,
     })
-    if (invoices.length > 0) {
-      res.status(200).json(invoices)
-    } else {
-      res.status(404)
-      throw new Error('No invoices found')
-    }
+    res.status(200).json(invoices)
   }
 )
 
@@ -66,7 +61,7 @@ const createInvoice = asyncHandler(
       _id: generateID(),
       createdAt,
       paymentTerms,
-      paymentDue: addDays(paymentTerms),
+      paymentDue: calculateDueDate(paymentTerms),
       description,
       status,
       client,
@@ -83,7 +78,27 @@ const createInvoice = asyncHandler(
 // @desc Update an invoice
 // @route PUT /api/invoices/:id
 // @access Private
-// DEFINE THIS LATER
+
+const updateInvoice = asyncHandler(async (req: Request, res: Response) => {
+  const { client, paymentTerms, description, items, status } = req.body
+
+  const invoice = await Invoice.findById(req.params.id)
+
+  if (invoice) {
+    invoice.client = client
+    invoice.paymentTerms = paymentTerms
+    invoice.paymentDue = calculateDueDate(paymentTerms, invoice.createdAt)
+    invoice.description = description
+    invoice.items = items
+    invoice.status = status
+
+    const updatedInvoice = await invoice.save()
+    res.json(updatedInvoice)
+  } else {
+    res.status(404)
+    throw new Error('Invoice not found')
+  }
+})
 
 // @desc Delete an invoice
 // @route DELETE /api/invoices/:id
@@ -105,5 +120,6 @@ export {
   getInvoiceById,
   getMyInvoices,
   createInvoice,
+  updateInvoice,
   deleteInvoice,
 }

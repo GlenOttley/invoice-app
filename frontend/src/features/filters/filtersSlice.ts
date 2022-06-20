@@ -5,23 +5,19 @@ import { selectInvoices } from '../invoices/invoicesSlice'
 export type Status = 'paid' | 'pending' | 'draft'
 
 interface IFilterState {
-  status: Status[]
+  status?: Status
 }
 
-const initialState: IFilterState = {
-  status: [],
-}
+const initialState: IFilterState = {}
 
 export const filtersSlice = createSlice({
   name: 'filters',
   initialState,
   reducers: {
     setStatus: (state, action: PayloadAction<Status>) => {
-      state.status.includes(action.payload)
-        ? (state.status = state.status.filter(
-            (item) => item !== action.payload
-          ))
-        : state.status.push(action.payload)
+      state.status === action.payload
+        ? (state.status = undefined)
+        : (state.status = action.payload)
     },
   },
   extraReducers: {},
@@ -40,14 +36,8 @@ export const selectStatus = createSelector(
 export const selectFilteredInvoices = createSelector(
   [selectInvoices, selectStatus],
   (invoices, status) => {
-    return Object.values(invoices.invoices).filter((invoice) => {
-      if (status.length) {
-        if (status.includes(invoice.status)) {
-          return invoice
-        }
-      } else {
-        return invoice
-      }
-    })
+    return Object.values(invoices.invoices).filter((invoice) =>
+      status ? invoice.status === status : invoice
+    )
   }
 )

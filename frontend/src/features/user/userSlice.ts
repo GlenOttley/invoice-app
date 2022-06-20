@@ -1,11 +1,13 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
 import { RootState } from '../../app/store'
+import IAddress from '../../interfaces/addressInterface'
 
 export interface IUserInfo {
   _id: string
   name: string
   image: string
+  address: IAddress
   token: string
 }
 
@@ -56,7 +58,12 @@ export const loginUser = createAsyncThunk(
 export const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {},
+  reducers: {
+    clearUser: () => {
+      localStorage.removeItem('user')
+      return initialState
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(loginUser.pending, (state) => {
@@ -81,5 +88,6 @@ export const userSlice = createSlice({
 
 export const initialUserState = userSlice.getInitialState()
 export const selectUser = (state: RootState) => state.user
+export const { clearUser } = userSlice.actions
 
 export default userSlice.reducer

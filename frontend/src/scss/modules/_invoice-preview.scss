@@ -1,18 +1,4 @@
 .invoice-preview {
-  // background-color: #ffff;
-  padding: 25px;
-  border-radius: 8px;
-  margin-bottom: 16px;
-  cursor: pointer;
-  box-shadow: $shadow;
-  @include layout-sm {
-    padding: 15px 25px;
-  }
-
-  &:hover {
-    outline: 1px solid $purple;
-  }
-
   .row {
     justify-content: space-between;
     @include layout-sm {

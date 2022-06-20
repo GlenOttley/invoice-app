@@ -13,7 +13,7 @@ const users: IUser[] = [
       country: 'United Kingdom',
     },
     password: bcrypt.hashSync('123456', 10),
-    image: 'assets/images/image-avatar.jpg',
+    image: '/assets/images/image-avatar.jpg',
     invoices: [
       'RT3080',
       'XM9141',
@@ -35,7 +35,7 @@ const users: IUser[] = [
       country: 'US',
     },
     password: bcrypt.hashSync('123456', 10),
-    image: 'assets/images/image-avatar.jpg',
+    image: '/assets/images/image-avatar.jpg',
     invoices: ['TY9141', 'FV2353'],
   },
 ]

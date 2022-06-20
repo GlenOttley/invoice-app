@@ -3,4 +3,5 @@ export default interface IItem {
   quantity: number
   price: number
   total: number
+  _id: string
 }

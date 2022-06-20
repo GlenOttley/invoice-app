@@ -44,7 +44,12 @@ export const getInvoices = createAsyncThunk(
 export const invoicesSlice = createSlice({
   name: 'invoices',
   initialState,
-  reducers: {},
+  reducers: {
+    clearInvoices: () => {
+      localStorage.removeItem('invoices')
+      return initialState
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(getInvoices.pending, (state) => {
@@ -70,5 +75,6 @@ export const invoicesSlice = createSlice({
 
 export const initialInvoicesState = invoicesSlice.getInitialState()
 export const selectInvoices = (state: RootState) => state.invoices
+export const { clearInvoices } = invoicesSlice.actions
 
 export default invoicesSlice.reducer

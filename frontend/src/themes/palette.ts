@@ -1,7 +1,4 @@
-import { PaletteMode } from '@mui/material'
-
 export const paletteLight = {
-  mode: 'light' as PaletteMode,
   background: {
     default: '#f8f8fb',
     paper: '#ffff',
@@ -33,7 +30,6 @@ export const paletteLight = {
 }
 
 export const paletteDark = {
-  mode: 'dark' as PaletteMode,
   background: {
     ...paletteLight.background,
     default: '#141625',
@@ -49,8 +45,5 @@ export const paletteDark = {
   },
   grey: {
     ...paletteLight.grey,
-    // 50: '#1e2139',
-    // 100: '#dfe3fa',
-    // 150: '#dfe3fa',
   },
 }

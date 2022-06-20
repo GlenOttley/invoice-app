@@ -86,7 +86,7 @@ const FilterMenu = (): JSX.Element => {
         }}
       >
         Filter
-        {!useMediaQuery(theme.breakpoints.down('xs')) && (
+        {!useMediaQuery(theme.breakpoints.down('sm')) && (
           <span>&nbsp;by status</span>
         )}
       </Button>
@@ -103,7 +103,7 @@ const FilterMenu = (): JSX.Element => {
               control={
                 <FilterCheckbox
                   value='draft'
-                  checked={status.includes('draft')}
+                  checked={status === 'draft'}
                   onChange={handleFilterCheckbox}
                 />
               }
@@ -116,7 +116,7 @@ const FilterMenu = (): JSX.Element => {
               control={
                 <FilterCheckbox
                   value='pending'
-                  checked={status.includes('pending')}
+                  checked={status === 'pending'}
                   onChange={handleFilterCheckbox}
                 />
               }
@@ -129,7 +129,7 @@ const FilterMenu = (): JSX.Element => {
               control={
                 <FilterCheckbox
                   value='paid'
-                  checked={status.includes('paid')}
+                  checked={status === 'paid'}
                   onChange={handleFilterCheckbox}
                 />
               }

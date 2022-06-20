@@ -2,12 +2,21 @@ import { useState, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { loginUser, selectUser } from '../features/user/userSlice'
-import { Typography, Box, FormControl, InputLabel } from '@mui/material'
+import {
+  useTheme,
+  Typography,
+  Box,
+  FormControl,
+  InputLabel,
+  Button,
+} from '@mui/material'
 import CustomTextField from '../components/CustomTextField'
+import CustomButton from '../components/CustomButton'
 
 const LoginScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
+  const theme = useTheme()
 
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
@@ -33,33 +42,38 @@ const LoginScreen = (): JSX.Element => {
         <Typography variant='h1'>Login</Typography>
 
         <Box component='form' autoComplete='off'>
-          <FormControl>
-            <InputLabel htmlFor='email'>Email</InputLabel>
-            <CustomTextField />
-          </FormControl>
+          <div>
+            <FormControl>
+              <InputLabel htmlFor='email'>Email</InputLabel>
+              <CustomTextField
+                value={email}
+                onChange={({ target }) => setEmail(target.value)}
+              />
+            </FormControl>
+          </div>
+
+          <div>
+            <FormControl>
+              <InputLabel htmlFor='password'>Password</InputLabel>
+              <CustomTextField
+                type='password'
+                value={password}
+                onChange={({ target }) => setPassword(target.value)}
+              />
+            </FormControl>
+          </div>
+
+          <div>
+            <CustomButton
+              type='submit'
+              value='submit'
+              onClick={handleLogin}
+              version='purple'
+            >
+              Submit
+            </CustomButton>
+          </div>
         </Box>
-
-        {/* <form onSubmit={handleLogin}>
-          <label>
-            Email
-            <input
-              type='text'
-              value={email}
-              onChange={({ target }) => setEmail(target.value)}
-            />
-          </label>
-
-          <label>
-            Password
-            <input
-              type='password'
-              value={password}
-              onChange={({ target }) => setPassword(target.value)}
-            />
-          </label>
-
-          <input type='submit' className='btn--purple' value='Submit' />
-        </form> */}
       </div>
     </div>
   )

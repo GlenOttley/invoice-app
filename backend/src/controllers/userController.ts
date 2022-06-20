@@ -18,6 +18,7 @@ const authUser = asyncHandler(
         _id: user._id,
         name: user.name,
         image: user.image,
+        address: user.address,
         token: generateToken(user._id),
       })
     } else {
