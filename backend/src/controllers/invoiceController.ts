@@ -85,12 +85,13 @@ const updateInvoice = asyncHandler(async (req: Request, res: Response) => {
   const invoice = await Invoice.findById(req.params.id)
 
   if (invoice) {
-    invoice.client = client
     invoice.paymentTerms = paymentTerms
     invoice.paymentDue = calculateDueDate(paymentTerms, invoice.createdAt)
     invoice.description = description
-    invoice.items = items
     invoice.status = status
+    invoice.client = client
+    invoice.items = items
+    invoice.total = calculateTotal(items)
 
     const updatedInvoice = await invoice.save()
     res.json(updatedInvoice)

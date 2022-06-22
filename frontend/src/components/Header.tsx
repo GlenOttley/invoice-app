@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom'
 import { useAppSelector } from '../app/hooks'
 import { selectUser } from '../features/user/userSlice'
 import { Box, useTheme, PaletteMode, alpha } from '@mui/material'
+import HomeButton from './HomeButton'
 
 interface IHeaderProps {
   mode: PaletteMode
@@ -18,11 +19,14 @@ const Header = ({ mode, setMode }: IHeaderProps): JSX.Element => {
     <Box
       className='header'
       sx={{
+        zIndex: theme.zIndex.drawer + 1,
+        position: 'fixed',
+        width: '100%',
         backgroundColor:
           theme.palette.mode === 'light' ? 'grey.200' : 'grey.100',
         [theme.breakpoints.up('lg')]: {
           borderTopRightRadius: '20px',
-          position: 'fixed',
+          width: 'auto',
         },
       }}
     >
@@ -36,9 +40,7 @@ const Header = ({ mode, setMode }: IHeaderProps): JSX.Element => {
         }}
       >
         <Link to='/'>
-          <button className='home-button'>
-            <img src='/assets/icons/logo.svg' alt='' />
-          </button>
+          <HomeButton />
         </Link>
 
         <Box

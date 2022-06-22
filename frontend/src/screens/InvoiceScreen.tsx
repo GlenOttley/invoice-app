@@ -67,7 +67,7 @@ const InvoiceScreen = (): JSX.Element => {
         invoice && (
           <>
             <CustomCard sx={{ marginBottom: theme.spacing(2) }}>
-              <CustomContainer version='inner--small'>
+              <CustomContainer version='xs'>
                 <Grid container justifyContent='space-between'>
                   <Grid
                     container
@@ -105,7 +105,7 @@ const InvoiceScreen = (): JSX.Element => {
             </CustomCard>
 
             <CustomCard>
-              <CustomContainer version='inner'>
+              <CustomContainer version='lg'>
                 <Grid container={screenSm} marginBottom={{ xs: 4, sm: 3 }}>
                   <Grid item sm={6} marginBottom={{ xs: 4, sm: 0 }}>
                     <Typography variant='h4'>
@@ -206,8 +206,15 @@ const InvoiceScreen = (): JSX.Element => {
                   </Grid>
                 </Grid>
 
-                <CustomCard sx={{ backgroundColor: theme.palette.grey[450] }}>
-                  <CustomContainer version='inner'>
+                <CustomCard
+                  sx={{
+                    backgroundColor:
+                      theme.palette.mode === 'light'
+                        ? theme.palette.grey[450]
+                        : theme.palette.grey[150],
+                  }}
+                >
+                  <CustomContainer version='md'>
                     <Grid container rowGap={3}>
                       {screenSm && (
                         <Grid container>
@@ -242,8 +249,16 @@ const InvoiceScreen = (): JSX.Element => {
                           <Grid container item alignItems='center'>
                             <Grid item xs={6} sm={3}>
                               <Typography variant='h4'>{item.name}</Typography>
+
                               {!screenSm && (
-                                <Typography variant='h4' color='text.secondary'>
+                                <Typography
+                                  variant='h4'
+                                  color={
+                                    theme.palette.mode === 'light'
+                                      ? theme.palette.grey[250]
+                                      : theme.palette.grey[300]
+                                  }
+                                >
                                   {item.quantity}x £{' '}
                                   {item.price.toLocaleString(undefined, {
                                     minimumFractionDigits: 2,
@@ -285,8 +300,15 @@ const InvoiceScreen = (): JSX.Element => {
                     </Grid>
                   </CustomContainer>
 
-                  <Box sx={{ backgroundColor: theme.palette.grey[200] }}>
-                    <CustomContainer version='inner'>
+                  <Box
+                    sx={{
+                      backgroundColor:
+                        theme.palette.mode === 'light'
+                          ? theme.palette.grey[200]
+                          : theme.palette.grey[0],
+                    }}
+                  >
+                    <CustomContainer version='sm'>
                       <Grid container alignItems='center'>
                         <Grid item xs={6}>
                           <Typography variant='body2' color='white'>
@@ -310,9 +332,9 @@ const InvoiceScreen = (): JSX.Element => {
 
             {!screenSm && (
               <CustomContainer
-                version='inner'
+                version='sm'
                 sx={{
-                  backgroundColor: 'white',
+                  backgroundColor: theme.palette.background.paper,
                   marginTop: theme.spacing(7),
                   position: 'absolute',
                   left: '0',

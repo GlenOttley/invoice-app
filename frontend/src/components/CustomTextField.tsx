@@ -5,6 +5,7 @@ const CustomTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
     marginTop: '40px',
   },
   '& .MuiOutlinedInput-root': {
+    fontWeight: '600',
     '& fieldset': {
       border: `1px solid ${theme.palette.grey[350]}`,
       borderRadius: '4px',
@@ -15,6 +16,13 @@ const CustomTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
     '&:hover fieldset': {
       border: `1px solid ${theme.palette.primary.purple}`,
     },
+  },
+  '.MuiSelect-icon': {
+    color: theme.palette.primary.purple,
+    fontSize: '18px',
+  },
+  '.MuiList-root': {
+    backgroundColor: 'red',
   },
 }))
 

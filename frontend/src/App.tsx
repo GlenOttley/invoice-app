@@ -19,6 +19,8 @@ const App = (): JSX.Element => {
   const [mode, setMode] = useState<PaletteMode>('light')
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode])
 
+  console.log(theme)
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline>
@@ -32,7 +34,7 @@ const App = (): JSX.Element => {
             }}
           >
             <Header mode={mode} setMode={setMode} />
-            <CustomContainer version='outer'>
+            <CustomContainer version='xl'>
               <Routes>
                 <Route path='/' element={<InvoicesScreen />} />
                 <Route path='/login' element={<LoginScreen />} />

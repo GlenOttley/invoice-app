@@ -23,7 +23,7 @@ const InvoicePreview = ({ invoice }: IAppProps): JSX.Element => {
         },
       }}
     >
-      <CustomContainer version='inner--small'>
+      <CustomContainer version='xs'>
         <div className='row'>
           <div className='col col--left'>
             <Typography variant='h4' className='id'>

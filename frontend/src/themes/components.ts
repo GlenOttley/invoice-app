@@ -14,18 +14,36 @@ export const components = {
       },
     },
   },
-  // MuiList: {
-  //   styleOverrides: {
-  //     root: {
-  //       padding: '4px 10px',
-  //     },
-  //   },
-  // },
+  MuiInputLabel: {
+    styleOverrides: {
+      root: {
+        left: '-13px',
+      },
+    },
+  },
+  MuiList: {
+    styleOverrides: {
+      root: {
+        padding: '0px',
+      },
+    },
+  },
   MuiMenuItem: {
     styleOverrides: {
       root: {
+        fontWeight: '600',
         paddingTop: '4px',
         paddingBottom: '4px',
+        '&:hover': {
+          color: '#7c5dfa',
+          backgroundColor: 'transparent',
+        },
+        '&.Mui-selected, &.Mui-selected:hover': {
+          backgroundColor: 'transparent',
+        },
+        '&:not(:last-child)': {
+          borderBottom: '1px solid #DFE3FA',
+        },
       },
     },
   },

@@ -2,28 +2,37 @@ import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import {
+  useTheme,
   Grid,
-  Button,
+  Typography,
   Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
   DialogActions,
+  Drawer,
 } from '@mui/material'
-import CustomButton from './CustomButton'
 import {
   selectInvoice,
   updateInvoice,
   deleteInvoice,
 } from '../features/invoices/invoiceSlice'
+import CustomButton from './CustomButton'
+import CustomContainer from './CustomContainer'
+
+import InvoiceEditForm from './InvoiceEditForm'
 
 const InvoiceActions = (): JSX.Element => {
+  const theme = useTheme()
   const dispatch = useAppDispatch()
   const select = useAppSelector
   const navigate = useNavigate()
 
   const invoiceState = select(selectInvoice)
   const { invoice } = invoiceState
+
+  const [showEditForm, setShowEditForm] = useState<boolean>(false)
+
+  const handleEditButton = () => {
+    setShowEditForm(true)
+  }
 
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
 
@@ -45,7 +54,9 @@ const InvoiceActions = (): JSX.Element => {
   return (
     <>
       <Grid item>
-        <CustomButton version='grey'>Edit</CustomButton>
+        <CustomButton version='grey' onClick={handleEditButton}>
+          Edit
+        </CustomButton>
       </Grid>
       <Grid item>
         <CustomButton version='peach' onClick={() => setShowDeleteDialog(true)}>
@@ -65,17 +76,69 @@ const InvoiceActions = (): JSX.Element => {
         open={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}
       >
-        <DialogTitle>Delete Invoice #{invoice._id}?</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            This will permanently delete the invoice from your account.
-          </DialogContentText>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setShowDeleteDialog(false)}>Cancel</Button>
-          <Button onClick={handleDelete}>Confirm</Button>
-        </DialogActions>
+        <CustomContainer
+          version='lg'
+          sx={{
+            backgroundColor:
+              theme.palette.mode === 'light'
+                ? 'white'
+                : theme.palette.grey[100],
+          }}
+        >
+          <Typography variant='h2' marginBottom={1}>
+            Cofirm Deletion
+          </Typography>
+
+          <Typography
+            variant='body1'
+            color='grey.300'
+            lineHeight={2}
+            marginBottom={3}
+          >
+            Are you sure you want to delete invoice #{invoice._id} This action
+            cannot be undone.
+          </Typography>
+
+          <DialogActions>
+            <CustomButton
+              version='grey'
+              onClick={() => setShowDeleteDialog(false)}
+            >
+              Cancel
+            </CustomButton>
+            <CustomButton version='peach' onClick={handleDelete}>
+              Delete
+            </CustomButton>
+          </DialogActions>
+        </CustomContainer>
       </Dialog>
+
+      <Drawer
+        open={showEditForm}
+        onClose={() => setShowEditForm(false)}
+        anchor='left'
+        sx={{
+          [`& .MuiDrawer-paper`]: {
+            top: theme.variables.header.offset.xs,
+            height: 'calc(100% - 72px)',
+            width: '100%',
+            boxSizing: 'border-box',
+            [theme.breakpoints.up('md')]: {
+              borderTopRightRadius: '20px',
+              borderBottomRightRadius: '20px',
+              top: theme.variables.header.offset.md,
+              width: '616px',
+            },
+            [theme.breakpoints.up('lg')]: {
+              top: 0,
+              height: '100%',
+              width: `calc(616px + ${theme.variables.header.offset.lg})`,
+            },
+          },
+        }}
+      >
+        <InvoiceEditForm setShowEditForm={setShowEditForm} />
+      </Drawer>
     </>
   )
 }

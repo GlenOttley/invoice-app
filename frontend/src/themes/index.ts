@@ -3,13 +3,27 @@ import { breakpoints } from './breakpoints'
 import { components } from './components'
 import { paletteLight, paletteDark } from './palette'
 import { typography } from './typography'
+import { variables } from './variables'
 
 declare module '@mui/material/styles' {
   interface Theme {
+    variables: {
+      header: {
+        offset: {
+          xs: string
+          md: string
+          lg: string
+        }
+      }
+    }
     palette: {
       mode: PaletteMode
       shadows: {
         1: string
+      }
+      background: {
+        default: string
+        paper: string
       }
       primary: {
         main: string
@@ -25,6 +39,7 @@ declare module '@mui/material/styles' {
         secondary: string
       }
       grey: {
+        0: string
         50: string
         100: string
         150: string
@@ -40,6 +55,7 @@ declare module '@mui/material/styles' {
 }
 
 const getDesignTokens = (mode: PaletteMode) => ({
+  variables,
   breakpoints,
   components,
   typography,
