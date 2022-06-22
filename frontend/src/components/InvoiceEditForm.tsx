@@ -79,45 +79,32 @@ const InvoiceEditForm = ({
     setDate(newDate)
   }
 
-  const handleItemNameChange = (id: string, name: string) => {
-    const index = items.findIndex((item) => item._id === id)
-    setItems([
-      ...items.slice(0, index),
-      { ...items[index], name },
-      ...items.slice(index + 1),
-    ])
-  }
-
-  const handleItemQuantityChange = (id: string, quantity: number) => {
-    const index = items.findIndex((item) => item._id === id)
-    setItems([
-      ...items.slice(0, index),
-      { ...items[index], quantity, total: quantity * items[index].price },
-      ...items.slice(index + 1),
-    ])
-  }
-
-  const handleItemPriceChange = (id: string, price: number) => {
-    const index = items.findIndex((item) => item._id === id)
-    setItems([
-      ...items.slice(0, index),
-      { ...items[index], price, total: items[index].quantity * price },
-      ...items.slice(index + 1),
-    ])
-  }
-
-  // const handleItemValueChange = (
-  //   key: string,
-  //   id: string,
-  //   value: string | number
-  // ) => {
-  //   const index = items.findIndex((item) => item._id === id)
-  //   setItems([
-  //     ...items.slice(0, index),
-  //     { ...items[index], [key]: value },
-  //     ...items.slice(index + 1),
-  //   ])
+  // const calculateTotal = (index: number, quantity?: number, price?: number) => {
+  //   quantity = quantity || items[index].quantity
+  //   price = price || items[index].price
+  //   return quantity * price
   // }
+
+  const handleItemValueChange = (
+    key: string,
+    id: string,
+    value: string | number
+  ) => {
+    const index = items.findIndex((item) => item._id === id)
+    let total: number
+    if (key === 'quantity') {
+      total = Number(value) * items[index].price
+    } else if (key === 'price') {
+      total = items[index].quantity * Number(value)
+    } else {
+      total = items[index].total
+    }
+    setItems([
+      ...items.slice(0, index),
+      { ...items[index], [key]: value, total },
+      ...items.slice(index + 1),
+    ])
+  }
 
   const handleItemDelete = (id: string) => {
     const index = items.findIndex((item) => item._id === id)
@@ -414,8 +401,13 @@ const InvoiceEditForm = ({
                           <InputLabel htmlFor='itemName'>Item Name</InputLabel>
                           <CustomTextField
                             value={item.name}
-                            onChange={() =>
-                              handleItemNameChange(item._id, item.name)
+                            id={item._id}
+                            onChange={(event) =>
+                              handleItemValueChange(
+                                'name',
+                                event.target.id,
+                                event.target.value
+                              )
                             }
                           />
                         </FormControl>
@@ -426,8 +418,13 @@ const InvoiceEditForm = ({
                           <InputLabel htmlFor='itemQuantity'>Qty.</InputLabel>
                           <CustomTextField
                             value={item.quantity}
-                            onChange={() =>
-                              handleItemQuantityChange(item._id, item.quantity)
+                            id={item._id}
+                            onChange={(event) =>
+                              handleItemValueChange(
+                                'quantity',
+                                event.target.id,
+                                event.target.value
+                              )
                             }
                           />
                         </FormControl>
@@ -438,8 +435,13 @@ const InvoiceEditForm = ({
                           <InputLabel htmlFor='itemPrice'>Price</InputLabel>
                           <CustomTextField
                             value={item.price}
-                            onChange={() =>
-                              handleItemPriceChange(item._id, item.price)
+                            id={item._id}
+                            onChange={(event) =>
+                              handleItemValueChange(
+                                'price',
+                                event.target.id,
+                                event.target.value
+                              )
                             }
                           />
                         </FormControl>
