@@ -19,8 +19,6 @@ const App = (): JSX.Element => {
   const [mode, setMode] = useState<PaletteMode>('light')
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode])
 
-  console.log(theme)
-
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline>

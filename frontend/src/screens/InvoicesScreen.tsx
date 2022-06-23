@@ -41,6 +41,7 @@ const InvoicesScreen = (): JSX.Element => {
   }, [dispatch, userInfo])
 
   return (
+    // TO DO: Refactor this using MUI Grid
     <div className='invoices-screen'>
       <div className='row top-panel'>
         <div className='col'>

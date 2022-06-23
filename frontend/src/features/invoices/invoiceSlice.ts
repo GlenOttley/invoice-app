@@ -133,7 +133,6 @@ export const invoiceSlice = createSlice({
           state.error = action.error.message
         }
         state.loading = false
-        // state.invoice = {} as IInvoice
       })
       // DELETE INVOICE
       .addCase(deleteInvoice.pending, (state) => {
