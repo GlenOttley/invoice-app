@@ -1,4 +1,4 @@
-import { Box, Grid, useTheme } from '@mui/material'
+import { Grid, useTheme } from '@mui/material'
 
 const HomeButton = (): JSX.Element => {
   const theme = useTheme()

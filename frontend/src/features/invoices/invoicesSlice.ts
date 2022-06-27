@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice } from '@reduxjs/toolkit'
 import axios, { AxiosError } from 'axios'
 import type { RootState } from '../../app/store'
 import IInvoice from '../../interfaces/invoiceInterface'
-import { IUserState, IUserInfo } from '../user/userSlice'
+import { IUserInfo, IUserState } from '../user/userSlice'
 
 interface InvoicesState {
   invoices: IInvoice[]

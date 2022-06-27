@@ -1,32 +1,39 @@
-import React, { useEffect, useState, SetStateAction } from 'react'
-import { useAppSelector, useAppDispatch } from '../app/hooks'
+import DeleteIcon from '@mui/icons-material/Delete'
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import {
-  useMediaQuery,
-  useTheme,
-  Container,
   Button,
-  Typography,
-  Grid,
+  Container,
   FormControl,
+  Grid,
+  IconButton,
   InputLabel,
   MenuItem,
-  IconButton,
+  Typography,
+  useMediaQuery,
+  useTheme,
 } from '@mui/material'
-import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
-import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
+import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers'
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
+import React, { SetStateAction, useEffect, useState } from 'react'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
 import { selectInvoice, updateInvoice } from '../features/invoices/invoiceSlice'
 import { selectUser } from '../features/user/userSlice'
+import IItem from '../interfaces/itemInterface'
+import CustomButton from './CustomButton'
+import CustomTextField from './CustomTextField'
 import Loader from './Loader'
 import Message from './Message'
-import CustomTextField from './CustomTextField'
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import { LocalizationProvider, DesktopDatePicker } from '@mui/x-date-pickers'
-import IItem from '../interfaces/itemInterface'
-import DeleteIcon from '@mui/icons-material/Delete'
-import CustomButton from './CustomButton'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 
 interface IInvoiceEditFormProps {
   setShowEditForm: React.Dispatch<SetStateAction<boolean>>
+}
+
+interface IFormInput {
+  name: string
+  email: string
+  street: string
 }
 
 const InvoiceEditForm = ({
@@ -500,7 +507,5 @@ const InvoiceEditForm = ({
     </Container>
   )
 }
-
-// new comment only on new branch
 
 export default InvoiceEditForm

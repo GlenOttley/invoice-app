@@ -1,8 +1,8 @@
+import { alpha, Box, PaletteMode, useTheme } from '@mui/material'
 import React, { SetStateAction } from 'react'
 import { Link } from 'react-router-dom'
 import { useAppSelector } from '../app/hooks'
 import { selectUser } from '../features/user/userSlice'
-import { Box, useTheme, PaletteMode, alpha } from '@mui/material'
 import HomeButton from './HomeButton'
 
 interface IHeaderProps {

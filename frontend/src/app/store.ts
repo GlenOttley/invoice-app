@@ -1,13 +1,13 @@
 import { configureStore } from '@reduxjs/toolkit'
 import { setupListeners } from '@reduxjs/toolkit/dist/query'
-import invoicesReducer, {
-  initialInvoicesState,
-} from '../features/invoices/invoicesSlice'
+import filtersReducer from '../features/filters/filtersSlice'
 import invoiceReducer, {
   initialInvoiceState,
 } from '../features/invoices/invoiceSlice'
+import invoicesReducer, {
+  initialInvoicesState,
+} from '../features/invoices/invoicesSlice'
 import userReducer, { initialUserState } from '../features/user/userSlice'
-import filtersReducer from '../features/filters/filtersSlice'
 
 const userFromStorage = localStorage.getItem('user')
   ? JSON.parse(localStorage.getItem('user') || '')

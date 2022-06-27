@@ -1,5 +1,5 @@
-import { styled, Box, BoxProps, alpha } from '@mui/material'
 import CircleIcon from '@mui/icons-material/Circle'
+import { alpha, Box, BoxProps, styled } from '@mui/material'
 
 interface IStatusBadgeProps extends BoxProps {
   variant: 'draft' | 'pending' | 'paid'
