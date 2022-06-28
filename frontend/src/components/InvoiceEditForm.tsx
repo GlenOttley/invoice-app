@@ -30,10 +30,30 @@ interface IInvoiceEditFormProps {
   setShowEditForm: React.Dispatch<SetStateAction<boolean>>
 }
 
+const data = {
+  name: 'john doe',
+  email: 'johndoe@mail.com',
+  items: [
+    { name: 'Banner Design', quantity: 1, price: 150, total: 150 },
+    { name: 'Email Design', quantity: 2, price: 200, total: 400 },
+  ],
+}
+
 interface IFormInput {
   name: string
   email: string
   street: string
+  city: string
+  postCode: string
+  country: string
+  date: Date
+  paymentTerms: number
+  description: string
+  itemName: string
+  itemQuantity: number
+  itemPrice: number
+  itemTotal: number
+  items: IItem[]
 }
 
 const InvoiceEditForm = ({
@@ -116,34 +136,44 @@ const InvoiceEditForm = ({
     return total
   }
 
-  const handleFormSubmit = () => {
-    // TO DO: add form validation
-    dispatch(
-      updateInvoice({
-        _id: invoice._id,
-        createdAt: invoice.createdAt,
-        paymentTerms,
-        paymentDue: calculateDueDate(invoice.createdAt, paymentTerms),
-        description,
-        status: 'pending',
-        client: {
-          _id: invoice.client._id,
-          name,
-          email,
-          address: {
-            street,
-            city,
-            postCode,
-            country,
-          },
-        },
-        sender: invoice.sender,
-        items,
-        total: calculateTotal(items),
-      })
-    )
-    setShowEditForm(false)
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormInput>()
+
+  const handleFormSubmit: SubmitHandler<IFormInput> = (data) => {
+    console.log(data)
   }
+
+  // const handleFormSubmit = () => {
+  //   // TO DO: add form validation
+  //   dispatch(
+  //     updateInvoice({
+  //       _id: invoice._id,
+  //       createdAt: invoice.createdAt,
+  //       paymentTerms,
+  //       paymentDue: calculateDueDate(invoice.createdAt, paymentTerms),
+  //       description,
+  //       status: 'pending',
+  //       client: {
+  //         _id: invoice.client._id,
+  //         name,
+  //         email,
+  //         address: {
+  //           street,
+  //           city,
+  //           postCode,
+  //           country,
+  //         },
+  //       },
+  //       sender: invoice.sender,
+  //       items,
+  //       total: calculateTotal(items),
+  //     })
+  //   )
+  //   setShowEditForm(false)
+  // }
 
   useEffect(() => {
     setName(invoice.client.name)
@@ -211,7 +241,13 @@ const InvoiceEditForm = ({
               {invoice._id}
             </Typography>
 
-            <Grid item container spacing={5} component='form'>
+            <Grid
+              item
+              container
+              spacing={5}
+              component='form'
+              onSubmit={handleSubmit(handleFormSubmit)}
+            >
               <Grid item container columnSpacing={3}>
                 <Grid item xs={12}>
                   <Typography variant='h4' color='primary.purple'>
@@ -271,116 +307,258 @@ const InvoiceEditForm = ({
                 </Grid>
 
                 <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor='name'>Client's Name</InputLabel>
-                    <CustomTextField
-                      value={name}
-                      onChange={({ target }) => setName(target.value)}
-                    />
-                  </FormControl>
+                  <Controller
+                    name='name'
+                    control={control}
+                    defaultValue={invoice.client.name}
+                    rules={{
+                      required: "can't be empty",
+                    }}
+                    render={({ field }) => (
+                      <FormControl fullWidth error={!!errors.name}>
+                        <InputLabel htmlFor='name'>
+                          Client's Name
+                          <Typography variant='overline'>
+                            {errors.name?.message}
+                          </Typography>
+                        </InputLabel>
+
+                        <CustomTextField
+                          {...field}
+                          type='text'
+                          error={!!errors.name}
+                        />
+                      </FormControl>
+                    )}
+                  />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor='email'>Client's Email</InputLabel>
-                    <CustomTextField
-                      value={email}
-                      onChange={({ target }) => setEmail(target.value)}
-                    />
-                  </FormControl>
+                  <Controller
+                    name='email'
+                    control={control}
+                    defaultValue={invoice.client.email}
+                    rules={{
+                      required: "can't be empty",
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: 'please use a valid email address',
+                      },
+                    }}
+                    render={({ field }) => (
+                      <FormControl fullWidth error={!!errors.email}>
+                        <InputLabel htmlFor='email'>
+                          Client's Email
+                          <Typography variant='overline'>
+                            {errors.email?.message}
+                          </Typography>
+                        </InputLabel>
+                        <CustomTextField
+                          {...field}
+                          type='email'
+                          error={!!errors.email}
+                        />
+                      </FormControl>
+                    )}
+                  />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor='street'>Street</InputLabel>
-                    <CustomTextField
-                      value={street}
-                      onChange={({ target }) => setStreet(target.value)}
-                    />
-                  </FormControl>
+                  <Controller
+                    name='street'
+                    control={control}
+                    defaultValue={invoice.client.address.street}
+                    rules={{
+                      required: "can't be empty",
+                    }}
+                    render={({ field }) => (
+                      <FormControl fullWidth error={!!errors.street}>
+                        <InputLabel htmlFor='street'>
+                          Street
+                          <Typography variant='overline'>
+                            {errors.street?.message}
+                          </Typography>
+                        </InputLabel>
+                        <CustomTextField
+                          {...field}
+                          type='text'
+                          error={!!errors.street}
+                        />
+                      </FormControl>
+                    )}
+                  />
                 </Grid>
 
                 <Grid item xs={6} md={4}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor='city'>City</InputLabel>
-                    <CustomTextField
-                      value={city}
-                      onChange={({ target }) => setCity(target.value)}
-                    />
-                  </FormControl>
+                  <Controller
+                    name='city'
+                    control={control}
+                    defaultValue={invoice.client.address.city}
+                    rules={{
+                      required: "can't be empty",
+                    }}
+                    render={({ field }) => (
+                      <FormControl fullWidth error={!!errors.city}>
+                        <InputLabel htmlFor='city'>
+                          City
+                          <Typography variant='overline'>
+                            {errors.city?.message}
+                          </Typography>
+                        </InputLabel>
+                        <CustomTextField
+                          {...field}
+                          type='text'
+                          error={!!errors.city}
+                        />
+                      </FormControl>
+                    )}
+                  />
                 </Grid>
 
                 <Grid item xs={6} md={4}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor='postCode'>Post Code</InputLabel>
-                    <CustomTextField
-                      value={postCode}
-                      onChange={({ target }) => setPostCode(target.value)}
-                    />
-                  </FormControl>
+                  <Controller
+                    name='postCode'
+                    control={control}
+                    defaultValue={invoice.client.address.postCode}
+                    rules={{
+                      required: "can't be empty",
+                    }}
+                    render={({ field }) => (
+                      <FormControl fullWidth error={!!errors.postCode}>
+                        <InputLabel htmlFor='postCode'>
+                          Post Code
+                          <Typography variant='overline'>
+                            {errors.postCode?.message}
+                          </Typography>
+                        </InputLabel>
+                        <CustomTextField
+                          {...field}
+                          type='text'
+                          error={!!errors.postCode}
+                        />
+                      </FormControl>
+                    )}
+                  />
                 </Grid>
 
                 <Grid item xs={12} md={4}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor='country'>Country</InputLabel>
-                    <CustomTextField
-                      value={country}
-                      onChange={({ target }) => setCountry(target.value)}
-                    />
-                  </FormControl>
+                  <Controller
+                    name='country'
+                    control={control}
+                    defaultValue={invoice.client.address.country}
+                    rules={{
+                      required: "can't be empty",
+                    }}
+                    render={({ field }) => (
+                      <FormControl fullWidth error={!!errors.country}>
+                        <InputLabel htmlFor='country'>
+                          Country
+                          <Typography variant='overline'>
+                            {errors.country?.message}
+                          </Typography>
+                        </InputLabel>
+                        <CustomTextField {...field} error={!!errors.country} />
+                      </FormControl>
+                    )}
+                  />
                 </Grid>
               </Grid>
               <Grid item container columnSpacing={3}>
                 <Grid item xs={12} md={6}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor='date'>Invoice Date</InputLabel>
-                    <LocalizationProvider dateAdapter={AdapterDateFns}>
-                      <DesktopDatePicker
-                        value={invoice.createdAt}
-                        onChange={() => null}
-                        disabled
-                        renderInput={(params) => (
-                          <CustomTextField {...params} />
-                        )}
-                      ></DesktopDatePicker>
-                    </LocalizationProvider>
-                  </FormControl>
+                  <Controller
+                    name='date'
+                    control={control}
+                    defaultValue={invoice.createdAt}
+                    rules={{
+                      required: "can't be empty",
+                    }}
+                    render={({ field }) => (
+                      <FormControl fullWidth error={!!errors.date}>
+                        <InputLabel htmlFor='date'>
+                          Invoice Date
+                          <Typography variant='overline'>
+                            {errors.date?.message}
+                          </Typography>
+                        </InputLabel>
+                        <LocalizationProvider dateAdapter={AdapterDateFns}>
+                          <DesktopDatePicker
+                            value={field.value}
+                            onChange={(e) => field.onChange(e)}
+                            disabled
+                            renderInput={(params) => (
+                              <CustomTextField
+                                {...params}
+                                type='date'
+                                error={!!errors.date}
+                              />
+                            )}
+                          ></DesktopDatePicker>
+                        </LocalizationProvider>
+                      </FormControl>
+                    )}
+                  />
                 </Grid>
 
                 <Grid item xs={12} md={6}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor='paymentTerms'>
-                      Payment Terms
-                    </InputLabel>
-                    <CustomTextField
-                      onChange={({ target }) =>
-                        setPaymentTerms(Number(target.value))
-                      }
-                      value={paymentTerms}
-                      select
-                      SelectProps={{
-                        IconComponent: KeyboardArrowDownIcon,
-                      }}
-                    >
-                      {paymentTermOptions.map((option) => (
-                        <MenuItem key={option.value} value={option.value}>
-                          {option.label}
-                        </MenuItem>
-                      ))}
-                    </CustomTextField>
-                  </FormControl>
+                  <Controller
+                    name='paymentTerms'
+                    control={control}
+                    defaultValue={invoice.paymentTerms}
+                    rules={{
+                      required: "can't be empty",
+                    }}
+                    render={({ field }) => (
+                      <FormControl fullWidth error={!!errors.paymentTerms}>
+                        <InputLabel htmlFor='paymentTerms'>
+                          Payment Terms
+                          <Typography variant='overline'>
+                            {errors.paymentTerms?.message}
+                          </Typography>
+                        </InputLabel>
+                        <CustomTextField
+                          {...field}
+                          type='number'
+                          select
+                          error={!!errors.paymentTerms}
+                          SelectProps={{
+                            IconComponent: KeyboardArrowDownIcon,
+                          }}
+                        >
+                          {paymentTermOptions.map((option) => (
+                            <MenuItem key={option.value} value={option.value}>
+                              {option.label}
+                            </MenuItem>
+                          ))}
+                        </CustomTextField>
+                      </FormControl>
+                    )}
+                  />
                 </Grid>
 
                 <Grid item xs={12}>
-                  <FormControl fullWidth>
-                    <InputLabel htmlFor='description'>
-                      Project Description
-                    </InputLabel>
-                    <CustomTextField
-                      value={description}
-                      onChange={({ target }) => setDescription(target.value)}
-                    />
-                  </FormControl>
+                  <Controller
+                    name='description'
+                    control={control}
+                    defaultValue={invoice.description}
+                    rules={{
+                      required: "can't be empty",
+                    }}
+                    render={({ field }) => (
+                      <FormControl fullWidth error={!!errors.description}>
+                        <InputLabel htmlFor='description'>
+                          Project Description
+                          <Typography variant='overline'>
+                            {errors.description?.message}
+                          </Typography>
+                        </InputLabel>
+                        <CustomTextField
+                          {...field}
+                          type='text'
+                          error={!!errors.description}
+                        />
+                      </FormControl>
+                    )}
+                  />
                 </Grid>
               </Grid>
 
@@ -391,7 +569,7 @@ const InvoiceEditForm = ({
                   </Typography>
                 </Grid>
 
-                {items.map((item) => (
+                {invoice.items.map((item, index) => (
                   <Grid
                     item
                     container
@@ -401,72 +579,133 @@ const InvoiceEditForm = ({
                     marginBottom={1}
                   >
                     <Grid item xs={12} md={5}>
-                      <FormControl fullWidth>
-                        <InputLabel htmlFor='itemName'>Item Name</InputLabel>
-                        <CustomTextField
-                          value={item.name}
-                          id={item._id}
-                          onChange={(event) =>
-                            handleItemValueChange(
-                              'name',
-                              event.target.id,
-                              event.target.value
-                            )
-                          }
-                        />
-                      </FormControl>
+                      <Controller
+                        name={`items.${index}.name`}
+                        control={control}
+                        defaultValue={item.name}
+                        rules={{
+                          required: "can't be empty",
+                        }}
+                        render={({ field }) => (
+                          <FormControl fullWidth error={!!errors.items}>
+                            <InputLabel htmlFor='itemName'>
+                              Item Name
+                              <Typography variant='overline'>
+                                {errors.items?.message}
+                              </Typography>
+                            </InputLabel>
+                            <CustomTextField
+                              {...field}
+                              type='text'
+                              error={!!errors.items}
+                            />
+                          </FormControl>
+                        )}
+                      />
                     </Grid>
 
                     <Grid item xs={3} md={2}>
-                      <FormControl fullWidth>
-                        <InputLabel htmlFor='itemQuantity'>Qty.</InputLabel>
-                        <CustomTextField
-                          value={item.quantity}
-                          id={item._id}
-                          onChange={(event) =>
-                            handleItemValueChange(
-                              'quantity',
-                              event.target.id,
-                              event.target.value
-                            )
-                          }
-                        />
-                      </FormControl>
+                      <Controller
+                        name={`items.${index}.quantity`}
+                        control={control}
+                        defaultValue={item.quantity}
+                        rules={{
+                          required: "can't be empty",
+                        }}
+                        render={({ field }) => (
+                          <FormControl fullWidth error={!!errors.itemQuantity}>
+                            <InputLabel htmlFor='itemQuantity'>
+                              Qty.
+                              <Typography variant='overline'>
+                                {errors.itemQuantity?.message}
+                              </Typography>
+                            </InputLabel>
+                            <CustomTextField
+                              {...field}
+                              error={!!errors.items}
+                              // value={item.quantity}
+                              // id={item._id}
+                              // onChange={(event) =>
+                              //   handleItemValueChange(
+                              //     'quantity',
+                              //     event.target.id,
+                              //     event.target.value
+                              //   )
+                              // }
+                            />
+                          </FormControl>
+                        )}
+                      />
                     </Grid>
 
                     <Grid item xs={4} md={2}>
-                      <FormControl fullWidth>
-                        <InputLabel htmlFor='itemPrice'>Price</InputLabel>
-                        <CustomTextField
-                          value={item.price}
-                          id={item._id}
-                          onChange={(event) =>
-                            handleItemValueChange(
-                              'price',
-                              event.target.id,
-                              event.target.value
-                            )
-                          }
-                        />
-                      </FormControl>
+                      <Controller
+                        name={`items.${index}.price`}
+                        control={control}
+                        defaultValue={item.price}
+                        rules={{
+                          required: "can't be empty",
+                          pattern: {
+                            value: /^\d{0,8}(\.\d{1,4})?$/i,
+                            message: 'must be a valid price value',
+                          },
+                        }}
+                        render={({ field }) => (
+                          <FormControl fullWidth error={!!errors.itemPrice}>
+                            <InputLabel htmlFor='itemPrice'>
+                              Price
+                              <Typography variant='overline'>
+                                {errors.itemPrice?.message}
+                              </Typography>
+                            </InputLabel>
+                            <CustomTextField
+                              {...field}
+                              error={!!errors.itemPrice}
+                              // value={item.price}
+                              // id={item._id}
+                              // onChange={(event) =>
+                              //   handleItemValueChange(
+                              //     'price',
+                              //     event.target.id,
+                              //     event.target.value
+                              //   )
+                              // }
+                            />
+                          </FormControl>
+                        )}
+                      />
                     </Grid>
 
                     <Grid item xs={3} md={2}>
-                      <FormControl fullWidth>
-                        <InputLabel htmlFor='itemTotal'>Total</InputLabel>
-                        <CustomTextField
-                          value={item.total}
-                          id={item._id}
-                          disabled
-                          sx={{
-                            '& .MuiOutlinedInput-root': {
-                              '& fieldset': {
-                                border: 'none',
-                              },
-                            },
-                          }}
-                        />
-                      </FormControl>
+                      <Controller
+                        name={`items.${index}.total`}
+                        control={control}
+                        defaultValue={item.total}
+                        render={({ field }) => (
+                          <FormControl fullWidth error={!!errors.itemTotal}>
+                            <InputLabel htmlFor='itemTotal'>
+                              Total
+                              <Typography variant='overline'>
+                                {errors.itemTotal?.message}
+                              </Typography>
+                            </InputLabel>
+                            <CustomTextField
+                              {...field}
+                              error={!!errors.itemTotal}
+                              disabled
+                              sx={{
+                                '& .MuiOutlinedInput-root': {
+                                  '& fieldset': {
+                                    border: 'none',
+                                  },
+                                },
+                              }}
+                              // value={item.total}
+                              // id={item._id}
+                            />
+                          </FormControl>
+                        )}
+                      />
                     </Grid>
 
                     <Grid item xs={1} marginBottom={1} md={1}>
@@ -495,7 +734,7 @@ const InvoiceEditForm = ({
                   </CustomButton>
                 </Grid>
                 <Grid item>
-                  <CustomButton version='purple' onClick={handleFormSubmit}>
+                  <CustomButton type='submit' version='purple'>
                     Save Changes
                   </CustomButton>
                 </Grid>
