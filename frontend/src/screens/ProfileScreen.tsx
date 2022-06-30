@@ -1,9 +1,9 @@
-import { useAppDispatch, useAppSelector } from '../app/hooks'
-import { useNavigate } from 'react-router-dom'
-import { selectUser, clearUser } from '../features/user/userSlice'
-import { clearInvoices } from '../features/invoices/invoicesSlice'
 import { Typography } from '@mui/material'
+import { useNavigate } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
 import CustomButton from '../components/CustomButton'
+import { clearInvoices } from '../features/invoices/invoicesSlice'
+import { clearUser, selectUser } from '../features/user/userSlice'
 
 const ProfileScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()

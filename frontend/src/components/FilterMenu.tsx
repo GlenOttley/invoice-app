@@ -1,16 +1,16 @@
-import React, { useState } from 'react'
-import Checkbox, { CheckboxProps } from '@mui/material/Checkbox'
 import {
+  Button,
   FormControlLabel,
   FormControlLabelProps,
-  Button,
   Menu,
-  MenuList,
   MenuItem,
+  MenuList,
   useMediaQuery,
   useTheme,
 } from '@mui/material'
+import Checkbox, { CheckboxProps } from '@mui/material/Checkbox'
 import { styled } from '@mui/material/styles'
+import React, { useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import {
   selectFilters,

@@ -17,6 +17,9 @@ export const components = {
   MuiInputLabel: {
     styleOverrides: {
       root: {
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'space-between',
         left: '-13px',
       },
     },

@@ -11,13 +11,21 @@ import {
   selectFilteredInvoices,
   selectStatus,
 } from '../features/filters/filtersSlice'
-import { useTheme, useMediaQuery, Typography, Button } from '@mui/material'
+import {
+  useTheme,
+  useMediaQuery,
+  Typography,
+  Button,
+  Grid,
+} from '@mui/material'
 import Image from 'mui-image'
 
 const InvoicesScreen = (): JSX.Element => {
   const theme = useTheme()
   const dispatch = useAppDispatch()
   const select = useAppSelector
+
+  const screenSm = useMediaQuery(theme.breakpoints.up('sm'))
 
   const invoicesList = select(selectInvoices)
   const {
@@ -43,8 +51,13 @@ const InvoicesScreen = (): JSX.Element => {
   return (
     // TO DO: Refactor this using MUI Grid
     <div className='invoices-screen'>
-      <div className='row top-panel'>
-        <div className='col'>
+      <Grid
+        container
+        justifyContent='space-between'
+        alignItems='center'
+        marginBottom={4}
+      >
+        <Grid container item xs='auto' direction='column'>
           <Typography variant='h1' className='page-title'>
             Invoices
           </Typography>
@@ -59,8 +72,8 @@ const InvoicesScreen = (): JSX.Element => {
             )}
             {!invoices ? 'No' : filteredInvoices.length} {status} invoices
           </Typography>
-        </div>
-        <div className='col'>
+        </Grid>
+        <Grid container item xs='auto' justifyContent='flex-end'>
           <FilterMenu />
 
           <Button
@@ -77,40 +90,62 @@ const InvoicesScreen = (): JSX.Element => {
             New
             {!useMediaQuery(theme.breakpoints.down('sm')) && ' Invoice'}
           </Button>
-        </div>
-      </div>
+        </Grid>
+      </Grid>
 
-      {loadingInvoices ? (
-        <Loader />
-      ) : errorInvoices ? (
-        <Message severity='error'>{errorInvoices}</Message>
-      ) : (
-        filteredInvoices.map((invoice) => (
-          <Link to={`/invoice/${invoice._id}`} key={invoice._id}>
-            <InvoicePreview invoice={invoice} />
-          </Link>
-        ))
-      )}
+      <Grid container direction='column' gap={2}>
+        {loadingInvoices ? (
+          <Loader />
+        ) : errorInvoices ? (
+          <Message severity='error'>{errorInvoices}</Message>
+        ) : (
+          filteredInvoices.map((invoice) => (
+            <Link to={`/invoice/${invoice._id}`} key={invoice._id}>
+              <Grid container item>
+                <InvoicePreview invoice={invoice} />
+              </Grid>
+            </Link>
+          ))
+        )}
 
-      {!invoices.length && (
-        <div className='nothing-here'>
-          <Image
-            src='/assets/images/megaphone-woman.svg'
-            alt='woman appearing from envelope with megaphone'
-            showLoading={<Loader />}
-          />
-          <Typography variant='h2'>There is nothing here</Typography>
-          <Typography
-            variant='body1'
-            sx={{
-              color: 'text.secondary',
-            }}
-          >
-            Create an invoice by clicking the <br />
-            <strong>New</strong> button and get started
-          </Typography>
-        </div>
-      )}
+        {!invoices.length && (
+          <Grid container justifyContent='center'>
+            <Grid
+              item
+              width={{ xs: '217px', sm: '242px' }}
+              marginBottom={{ xs: 5, sm: 8 }}
+            >
+              <Image
+                src='/assets/images/megaphone-woman.svg'
+                alt='woman appearing from envelope with megaphone'
+                showLoading={<Loader />}
+              />
+            </Grid>
+
+            <Grid
+              container
+              item
+              xs={12}
+              justifyContent='center'
+              marginBottom={3}
+            >
+              <Typography variant='h2'>There is nothing here</Typography>
+            </Grid>
+
+            <Grid container item xs={12} justifyContent='center'>
+              <Typography
+                variant='body1'
+                color='text.secondary'
+                textAlign='center'
+              >
+                Create an invoice by clicking the <br />
+                <strong>New {screenSm && 'Invoice'}</strong> button and get
+                started
+              </Typography>
+            </Grid>
+          </Grid>
+        )}
+      </Grid>
     </div>
   )
 }

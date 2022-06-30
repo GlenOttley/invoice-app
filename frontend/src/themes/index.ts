@@ -38,6 +38,9 @@ declare module '@mui/material/styles' {
         primary: string
         secondary: string
       }
+      warning: {
+        main: string
+      }
       grey: {
         0: string
         50: string

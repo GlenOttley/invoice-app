@@ -16,6 +16,9 @@ export const paletteLight = {
     primary: '#0c0e16',
     secondary: '#7e88c3',
   },
+  warning: {
+    main: '#ec5757',
+  },
   grey: {
     0: '#0c0e16',
     50: '#141625',

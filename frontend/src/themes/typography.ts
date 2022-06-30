@@ -54,4 +54,12 @@ export const typography = {
     // letterSpacing: '0.25px',
     textTransform: 'none' as const,
   },
+  overline: {
+    fontSize: '1rem',
+    fontWeight: 600,
+    lineHeight: '1.5rem',
+    // letterSpacing: '0.21px'
+    color: '#ec5757',
+    textTransform: 'none' as const,
+  },
 }

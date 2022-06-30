@@ -17,12 +17,13 @@ const CustomTextField = styled(TextField)<TextFieldProps>(({ theme }) => ({
       border: `1px solid ${theme.palette.primary.purple}`,
     },
   },
+  // error outline
+  '.MuiOutlinedInput-input[aria-invalid="true"] + fieldset': {
+    borderColor: theme.palette.warning.main,
+  },
   '.MuiSelect-icon': {
     color: theme.palette.primary.purple,
     fontSize: '18px',
-  },
-  '.MuiList-root': {
-    backgroundColor: 'red',
   },
 }))
 

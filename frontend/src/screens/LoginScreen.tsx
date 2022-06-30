@@ -1,78 +1,99 @@
-import { useState, useEffect } from 'react'
+import { Box, FormControl, InputLabel, Typography } from '@mui/material'
+import { useEffect } from 'react'
+import { Controller, SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
-import { loginUser, selectUser } from '../features/user/userSlice'
-import {
-  useTheme,
-  Typography,
-  Box,
-  FormControl,
-  InputLabel,
-  Button,
-} from '@mui/material'
-import CustomTextField from '../components/CustomTextField'
 import CustomButton from '../components/CustomButton'
+import CustomTextField from '../components/CustomTextField'
+import { loginUser, selectUser } from '../features/user/userSlice'
 
 const LoginScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-  const theme = useTheme()
-
-  const [email, setEmail] = useState<string>('')
-  const [password, setPassword] = useState<string>('')
-
-  const handleLogin = (e: React.SyntheticEvent) => {
-    e.preventDefault()
-    const loginData = { email: email, password: password }
-    dispatch(loginUser(loginData))
-  }
 
   const user = useAppSelector(selectUser)
   const { userInfo } = user
+
+  interface IFormInput {
+    email: string
+    password: string
+  }
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<IFormInput>()
+
+  const handleLogin: SubmitHandler<IFormInput> = (data) => {
+    dispatch(loginUser(data))
+  }
 
   useEffect(() => {
     if (userInfo) {
       navigate('/')
     }
-  }, [userInfo])
+  }, [userInfo, navigate])
 
   return (
     <div className='login-screen'>
       <div className='container'>
         <Typography variant='h1'>Login</Typography>
 
-        <Box component='form' autoComplete='off'>
-          <div>
-            <FormControl>
-              <InputLabel htmlFor='email'>Email</InputLabel>
-              <CustomTextField
-                value={email}
-                onChange={({ target }) => setEmail(target.value)}
-              />
-            </FormControl>
-          </div>
+        <Box component='form' onSubmit={handleSubmit(handleLogin)}>
+          <Controller
+            name='email'
+            control={control}
+            defaultValue=''
+            rules={{
+              required: "can't be empty",
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'please use a valid email address',
+              },
+            }}
+            render={({ field }) => (
+              <FormControl error={!!errors.email}>
+                <InputLabel htmlFor='email'>
+                  Email
+                  <Typography variant='overline'>
+                    {errors.email && errors.email.message}
+                  </Typography>
+                </InputLabel>
+                <CustomTextField
+                  {...field}
+                  type='email'
+                  error={!!errors.email}
+                />
+              </FormControl>
+            )}
+          />
 
-          <div>
-            <FormControl>
-              <InputLabel htmlFor='password'>Password</InputLabel>
-              <CustomTextField
-                type='password'
-                value={password}
-                onChange={({ target }) => setPassword(target.value)}
-              />
-            </FormControl>
-          </div>
+          <Controller
+            name='password'
+            control={control}
+            defaultValue=''
+            rules={{ required: "can't be empty" }}
+            render={({ field }) => (
+              <FormControl error={!!errors.password}>
+                <InputLabel htmlFor='password'>
+                  Password
+                  <Typography variant='overline'>
+                    {errors.password && errors.password.message}
+                  </Typography>
+                </InputLabel>
+                <CustomTextField
+                  {...field}
+                  type='password'
+                  error={!!errors.password}
+                />
+              </FormControl>
+            )}
+          />
 
-          <div>
-            <CustomButton
-              type='submit'
-              value='submit'
-              onClick={handleLogin}
-              version='purple'
-            >
-              Submit
-            </CustomButton>
-          </div>
+          <CustomButton type='submit' version='purple'>
+            Submit
+          </CustomButton>
         </Box>
       </div>
     </div>
