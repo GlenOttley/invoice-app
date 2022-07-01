@@ -1,18 +1,35 @@
 import {
   Controller,
   useFormContext,
-  FieldError,
+  // FieldError,
   Control,
+  UseControllerProps,
 } from 'react-hook-form'
 import { Typography, InputLabel, FormControl } from '@mui/material'
 import CustomTextField from './CustomTextField'
 import { useAppSelector } from '../app/hooks'
 import { selectInvoice } from '../features/invoices/invoiceSlice'
+import _ from 'lodash'
 
-const ControlledInput = () => {
+interface ComponentProps extends UseControllerProps {
+  path: string
+  label: string
+  index?: number
+}
+
+const ControlledInput = ({
+  path,
+  name,
+  rules,
+  label,
+}: ComponentProps): JSX.Element => {
   const select = useAppSelector
 
   const { invoice } = select(selectInvoice)
+
+  // type ObjectKey = keyof typeof invoice
+
+  // const myVar = name as ObjectKey
 
   const {
     control,
@@ -21,20 +38,21 @@ const ControlledInput = () => {
 
   return (
     <Controller
-      name='name'
+      name={name}
       control={control}
-      defaultValue={invoice.client.name}
+      defaultValue={_.get(invoice, path)}
       rules={{
         required: "can't be empty",
+        ...rules,
       }}
       render={({ field }) => (
-        <FormControl fullWidth error={!!errors.name}>
-          <InputLabel htmlFor='name'>
-            Client's Name
-            <Typography variant='overline'>{errors.name?.message}</Typography>
+        <FormControl fullWidth error={!!errors[name]}>
+          <InputLabel htmlFor={name}>
+            {label}
+            <Typography variant='overline'>{errors[name]?.message}</Typography>
           </InputLabel>
 
-          <CustomTextField {...field} type='text' error={!!errors.name} />
+          <CustomTextField {...field} type='text' error={!!errors[name]} />
         </FormControl>
       )}
     />

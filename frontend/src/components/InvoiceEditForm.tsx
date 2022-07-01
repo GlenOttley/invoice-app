@@ -31,6 +31,8 @@ import CustomButton from './CustomButton'
 import CustomTextField from './CustomTextField'
 import Loader from './Loader'
 import Message from './Message'
+import ControlledInput from './ControlledInput'
+import ControlledItemInput from './ControlledItemInput'
 
 interface IInvoiceEditFormProps {
   setShowEditForm: React.Dispatch<SetStateAction<boolean>>
@@ -120,6 +122,7 @@ const InvoiceEditForm = ({
   })
 
   const handleFormSubmit: SubmitHandler<IFormInput> = (data: IFormInput) => {
+    // console.log(data)
     dispatch(
       updateInvoice({
         _id: invoice._id,
@@ -270,165 +273,60 @@ const InvoiceEditForm = ({
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Controller
+                    <ControlledInput
                       name='name'
-                      control={control}
-                      defaultValue={invoice.client.name}
-                      rules={{
-                        required: "can't be empty",
-                      }}
-                      render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.name}>
-                          <InputLabel htmlFor='name'>
-                            Client's Name
-                            <Typography variant='overline'>
-                              {errors.name?.message}
-                            </Typography>
-                          </InputLabel>
-
-                          <CustomTextField
-                            {...field}
-                            type='text'
-                            error={!!errors.name}
-                          />
-                        </FormControl>
-                      )}
+                      path='client.name'
+                      label="Client's Name"
                     />
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Controller
+                    <ControlledInput
                       name='email'
-                      control={control}
-                      defaultValue={invoice.client.email}
+                      path='client.email'
+                      label="Client's Email"
                       rules={{
-                        required: "can't be empty",
                         pattern: {
                           value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
                           message: 'please use a valid email address',
                         },
                       }}
-                      render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.email}>
-                          <InputLabel htmlFor='email'>
-                            Client's Email
-                            <Typography variant='overline'>
-                              {errors.email?.message}
-                            </Typography>
-                          </InputLabel>
-                          <CustomTextField
-                            {...field}
-                            type='email'
-                            error={!!errors.email}
-                          />
-                        </FormControl>
-                      )}
                     />
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Controller
+                    <ControlledInput
                       name='street'
-                      control={control}
-                      defaultValue={invoice.client.address.street}
-                      rules={{
-                        required: "can't be empty",
-                      }}
-                      render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.street}>
-                          <InputLabel htmlFor='street'>
-                            Street
-                            <Typography variant='overline'>
-                              {errors.street?.message}
-                            </Typography>
-                          </InputLabel>
-                          <CustomTextField
-                            {...field}
-                            type='text'
-                            error={!!errors.street}
-                          />
-                        </FormControl>
-                      )}
+                      path='client.address.street'
+                      label='Street'
                     />
                   </Grid>
 
                   <Grid item xs={6} md={4}>
-                    <Controller
+                    <ControlledInput
                       name='city'
-                      control={control}
-                      defaultValue={invoice.client.address.city}
-                      rules={{
-                        required: "can't be empty",
-                      }}
-                      render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.city}>
-                          <InputLabel htmlFor='city'>
-                            City
-                            <Typography variant='overline'>
-                              {errors.city?.message}
-                            </Typography>
-                          </InputLabel>
-                          <CustomTextField
-                            {...field}
-                            type='text'
-                            error={!!errors.city}
-                          />
-                        </FormControl>
-                      )}
+                      path='client.address.city'
+                      label='City'
                     />
                   </Grid>
 
                   <Grid item xs={6} md={4}>
-                    <Controller
+                    <ControlledInput
                       name='postCode'
-                      control={control}
-                      defaultValue={invoice.client.address.postCode}
-                      rules={{
-                        required: "can't be empty",
-                      }}
-                      render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.postCode}>
-                          <InputLabel htmlFor='postCode'>
-                            Post Code
-                            <Typography variant='overline'>
-                              {errors.postCode?.message}
-                            </Typography>
-                          </InputLabel>
-                          <CustomTextField
-                            {...field}
-                            type='text'
-                            error={!!errors.postCode}
-                          />
-                        </FormControl>
-                      )}
+                      path='client.address.postCode'
+                      label='Post Code'
                     />
                   </Grid>
 
                   <Grid item xs={12} md={4}>
-                    <Controller
+                    <ControlledInput
                       name='country'
-                      control={control}
-                      defaultValue={invoice.client.address.country}
-                      rules={{
-                        required: "can't be empty",
-                      }}
-                      render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.country}>
-                          <InputLabel htmlFor='country'>
-                            Country
-                            <Typography variant='overline'>
-                              {errors.country?.message}
-                            </Typography>
-                          </InputLabel>
-                          <CustomTextField
-                            {...field}
-                            error={!!errors.country}
-                          />
-                        </FormControl>
-                      )}
+                      path='client.address.country'
+                      label='Country'
                     />
                   </Grid>
                 </Grid>
+
                 <Grid item container columnSpacing={3}>
                   <Grid item xs={12} md={6}>
                     <Controller
@@ -502,28 +400,10 @@ const InvoiceEditForm = ({
                   </Grid>
 
                   <Grid item xs={12}>
-                    <Controller
+                    <ControlledInput
                       name='description'
-                      control={control}
-                      defaultValue={invoice.description}
-                      rules={{
-                        required: "can't be empty",
-                      }}
-                      render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.description}>
-                          <InputLabel htmlFor='description'>
-                            Project Description
-                            <Typography variant='overline'>
-                              {errors.description?.message}
-                            </Typography>
-                          </InputLabel>
-                          <CustomTextField
-                            {...field}
-                            type='text'
-                            error={!!errors.description}
-                          />
-                        </FormControl>
-                      )}
+                      path='description'
+                      label='Project Description'
                     />
                   </Grid>
                 </Grid>
@@ -545,7 +425,7 @@ const InvoiceEditForm = ({
                       marginBottom={1}
                     >
                       <Grid item xs={12} md={5}>
-                        <Controller
+                        {/* <Controller
                           name={`items.${index}.name`}
                           control={control}
                           defaultValue={field.name}
@@ -570,11 +450,18 @@ const InvoiceEditForm = ({
                               />
                             </FormControl>
                           )}
+                        /> */}
+
+                        <ControlledItemInput
+                          name='name'
+                          label='Item Name'
+                          defaultValue={field.name}
+                          index={index}
                         />
                       </Grid>
 
                       <Grid item xs={3} md={2}>
-                        <Controller
+                        {/* <Controller
                           name={`items.${index}.quantity`}
                           control={control}
                           defaultValue={field.quantity}
@@ -602,11 +489,17 @@ const InvoiceEditForm = ({
                               />
                             </FormControl>
                           )}
+                        /> */}
+                        <ControlledItemInput
+                          name='quantity'
+                          label='Qty.'
+                          defaultValue={field.quantity}
+                          index={index}
                         />
                       </Grid>
 
                       <Grid item xs={4} md={2}>
-                        <Controller
+                        {/* <Controller
                           name={`items.${index}.price`}
                           control={control}
                           defaultValue={field.price}
@@ -638,6 +531,13 @@ const InvoiceEditForm = ({
                               />
                             </FormControl>
                           )}
+                        /> */}
+
+                        <ControlledItemInput
+                          name='price'
+                          label='Price'
+                          defaultValue={field.price}
+                          index={index}
                         />
                       </Grid>
 
