@@ -2,7 +2,6 @@ import { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
 import Invoice from '../models/invoiceModel'
 import { IInvoiceDB } from '../interfaces/invoiceInterface'
-import generateID from '../utils/generateID'
 
 // @desc    Fetch all invoices
 // @route   GET /api/invoices
@@ -48,11 +47,12 @@ const getMyInvoices = asyncHandler(
 )
 
 // @desc Create new invoice
-// @route POST /api/invoices/new
+// @route POST /api/invoices
 // @access Private
 const createInvoice = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
     const {
+      _id,
       createdAt,
       paymentTerms,
       paymentDue,
@@ -64,17 +64,27 @@ const createInvoice = asyncHandler(
     } = req.body
 
     const invoice: IInvoiceDB = new Invoice({
-      _id: generateID(),
+      _id,
       createdAt,
       paymentTerms,
       paymentDue,
       description,
       status,
-      client,
+      client: {
+        name: client.name,
+        email: client.email,
+        address: {
+          street: client.address.street,
+          city: client.address.city,
+          postCode: client.address.postcode,
+          country: client.address.country,
+        },
+      },
       sender: req.user._id,
       items,
       total,
     })
+    console.log(invoice)
 
     const createdInvoice = await invoice.save()
     res.status(201).json(createdInvoice)
@@ -108,7 +118,6 @@ const updateInvoice = asyncHandler(async (req: Request, res: Response) => {
     invoice.client = client
     invoice.items = items
     invoice.total = total
-
     const updatedInvoice = await invoice.save()
     res.json(updatedInvoice)
   } else {

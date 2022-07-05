@@ -12,12 +12,14 @@ import { selectInvoice } from '../features/invoices/invoiceSlice'
 import _ from 'lodash'
 
 interface ComponentProps extends UseControllerProps {
+  filled: boolean
   path: string
   label: string
   index?: number
 }
 
 const ControlledInput = ({
+  filled,
   path,
   name,
   rules,
@@ -26,10 +28,6 @@ const ControlledInput = ({
   const select = useAppSelector
 
   const { invoice } = select(selectInvoice)
-
-  // type ObjectKey = keyof typeof invoice
-
-  // const myVar = name as ObjectKey
 
   const {
     control,
@@ -40,7 +38,7 @@ const ControlledInput = ({
     <Controller
       name={name}
       control={control}
-      defaultValue={_.get(invoice, path)}
+      defaultValue={filled ? _.get(invoice, path) : ''}
       rules={{
         required: "can't be empty",
         ...rules,

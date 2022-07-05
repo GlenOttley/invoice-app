@@ -30,10 +30,6 @@ const InvoiceActions = (): JSX.Element => {
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false)
 
-  const handleEditButton = () => {
-    setShowEditForm(true)
-  }
-
   const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
 
   const handleDelete = () => {
@@ -42,11 +38,11 @@ const InvoiceActions = (): JSX.Element => {
     navigate('/')
   }
 
-  const handleMarkPaid = () => {
+  const handleStatusChange = () => {
     dispatch(
       updateInvoice({
         ...invoice,
-        status: 'paid',
+        status: invoice.status === 'paid' ? 'pending' : 'paid',
       })
     )
   }
@@ -54,7 +50,7 @@ const InvoiceActions = (): JSX.Element => {
   return (
     <>
       <Grid item>
-        <CustomButton version='grey' onClick={handleEditButton}>
+        <CustomButton version='grey' onClick={() => setShowEditForm(true)}>
           Edit
         </CustomButton>
       </Grid>
@@ -64,12 +60,8 @@ const InvoiceActions = (): JSX.Element => {
         </CustomButton>
       </Grid>
       <Grid item>
-        <CustomButton
-          version='purple'
-          disabled={invoice.status === 'paid'}
-          onClick={handleMarkPaid}
-        >
-          Mark as Paid
+        <CustomButton version='purple' onClick={handleStatusChange}>
+          {invoice.status === 'paid' ? 'Mark as Pending' : 'Mark as Paid'}
         </CustomButton>
       </Grid>
       <Dialog

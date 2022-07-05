@@ -209,30 +209,6 @@ const invoices: IInvoice[] = [
     ],
     total: 3102.04,
   },
-  // {
-  //   createdAt: '2022-05-30T15:32:00.222Z',
-  //   paymentTerms: 14,
-  //   description: 'test invoice',
-  //   status: 'pending',
-  //   client: {
-  //     name: 'Jane Doe',
-  //     email: 'janedoe@email.com',
-  //     address: {
-  //       street: '1 main st',
-  //       city: 'NY',
-  //       postCode: '123 456',
-  //       country: 'USA',
-  //     },
-  //   },
-  //   items: [
-  //     {
-  //       name: 'Test Item',
-  //       quantity: 1,
-  //       price: 999.99,
-  //       total: 999.99,
-  //     },
-  //   ],
-  // },
 ]
 
 export default invoices

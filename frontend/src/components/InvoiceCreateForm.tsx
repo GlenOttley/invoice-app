@@ -2,6 +2,7 @@ import DeleteIcon from '@mui/icons-material/Delete'
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown'
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft'
 import {
+  Box,
   Button,
   Container,
   FormControl,
@@ -12,11 +13,10 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-  Box,
 } from '@mui/material'
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import React, { SetStateAction, useState } from 'react'
+import React, { SetStateAction, useEffect, useState } from 'react'
 import {
   Controller,
   FormProvider,
@@ -25,7 +25,6 @@ import {
   useForm,
 } from 'react-hook-form'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
-import { selectInvoice, updateInvoice } from '../features/invoices/invoiceSlice'
 import { selectUser } from '../features/user/userSlice'
 import IItem from '../interfaces/itemInterface'
 import ControlledInput from './ControlledInput'
@@ -34,14 +33,24 @@ import CustomButton from './CustomButton'
 import CustomTextField from './CustomTextField'
 import Loader from './Loader'
 import Message from './Message'
-import _ from 'lodash'
-import toPriceValue from '../utils/toPriceValue'
 
-interface IInvoiceEditFormProps {
-  setShowEditForm: React.Dispatch<SetStateAction<boolean>>
+import _ from 'lodash'
+import {
+  createInvoice,
+  selectInvoice,
+  invoiceCreateReset,
+} from '../features/invoices/invoiceSlice'
+import toPriceValue from '../utils/toPriceValue'
+import generateId from '../utils/generateId'
+import { useNavigate } from 'react-router-dom'
+
+interface IInvoiceCreateFormProps {
+  setShowCreateForm: React.Dispatch<SetStateAction<boolean>>
 }
 
 interface IFormInput {
+  createdAt: Date
+  status: 'paid' | 'pending' | 'draft'
   name: string
   email: string
   street: string
@@ -54,15 +63,15 @@ interface IFormInput {
   items: IItem[]
 }
 
-const InvoiceEditForm = ({
-  setShowEditForm,
-}: IInvoiceEditFormProps): JSX.Element => {
+const InvoiceCreateForm = ({
+  setShowCreateForm,
+}: IInvoiceCreateFormProps): JSX.Element => {
   const theme = useTheme()
   const select = useAppSelector
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
-  const { userInfo } = select(selectUser)
-  const { invoice, loading, error } = select(selectInvoice)
+  const { userInfo, loading, error } = select(selectUser)
 
   const [validating, setValidating] = useState<boolean>(false)
 
@@ -117,9 +126,6 @@ const InvoiceEditForm = ({
   }
 
   const methods = useForm<IFormInput>({
-    defaultValues: {
-      items: [...invoice.items],
-    },
     mode: 'onSubmit',
   })
 
@@ -135,18 +141,50 @@ const InvoiceEditForm = ({
     control,
   })
 
+  const invoiceState = select(selectInvoice)
+  const { invoice, successCreate } = invoiceState
+
+  const saveDraft = () => {
+    const id = generateId()
+    dispatch(
+      createInvoice({
+        _id: id,
+        createdAt: watch().createdAt,
+        paymentTerms: watch().paymentTerms,
+        paymentDue: calculateDueDate(watch().createdAt, watch().paymentTerms),
+        description: watch().description,
+        status: 'draft',
+        client: {
+          _id: '',
+          name: watch().name,
+          email: watch().email,
+          address: {
+            street: watch().street,
+            city: watch().city,
+            postCode: watch().postCode,
+            country: watch().country,
+          },
+        },
+        sender: '',
+        items: calculateItemTotal(watch().items),
+        total: calculateTotal(watch().items),
+      })
+    )
+  }
+
   const handleFormSubmit: SubmitHandler<IFormInput> = (data: IFormInput) => {
     if (validate(data)) {
+      const id = generateId()
       dispatch(
-        updateInvoice({
-          _id: invoice._id,
-          createdAt: invoice.createdAt,
+        createInvoice({
+          _id: id,
+          createdAt: data.createdAt,
           paymentTerms: data.paymentTerms,
-          paymentDue: calculateDueDate(invoice.createdAt, data.paymentTerms),
+          paymentDue: calculateDueDate(data.createdAt, data.paymentTerms),
           description: data.description,
           status: 'pending',
           client: {
-            _id: invoice.client._id,
+            _id: '',
             name: data.name,
             email: data.email,
             address: {
@@ -156,14 +194,20 @@ const InvoiceEditForm = ({
               country: data.country,
             },
           },
-          sender: invoice.sender,
+          sender: '',
           items: calculateItemTotal(data.items),
           total: calculateTotal(data.items),
         })
       )
-      setShowEditForm(false)
     }
   }
+
+  useEffect(() => {
+    if (successCreate) {
+      dispatch(invoiceCreateReset())
+      navigate(`/invoice/${invoice._id}`)
+    }
+  }, [successCreate, dispatch, navigate, invoice])
 
   return (
     <Container
@@ -186,7 +230,7 @@ const InvoiceEditForm = ({
     >
       {useMediaQuery(theme.breakpoints.down('md')) && (
         <Button
-          onClick={() => setShowEditForm(false)}
+          onClick={() => setShowCreateForm(false)}
           variant='text'
           sx={{
             padding: 0,
@@ -210,15 +254,10 @@ const InvoiceEditForm = ({
       ) : error ? (
         <Message severity='error'>{error}</Message>
       ) : (
-        invoice &&
         userInfo && (
           <Box>
             <Typography variant='h2' marginBottom={3}>
-              Edit{' '}
-              <Typography variant='h2' component='span' color='grey.300'>
-                #
-              </Typography>
-              {invoice._id}
+              New Invoice
             </Typography>
 
             <Grid
@@ -284,7 +323,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={12}>
                     <ControlledInput
-                      filled={true}
+                      filled={false}
                       name='name'
                       path='client.name'
                       label="Client's Name"
@@ -293,7 +332,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={12}>
                     <ControlledInput
-                      filled={true}
+                      filled={false}
                       name='email'
                       path='client.email'
                       label="Client's Email"
@@ -308,7 +347,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={12}>
                     <ControlledInput
-                      filled={true}
+                      filled={false}
                       name='street'
                       path='client.address.street'
                       label='Street'
@@ -317,7 +356,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={6} md={4}>
                     <ControlledInput
-                      filled={true}
+                      filled={false}
                       name='city'
                       path='client.address.city'
                       label='City'
@@ -326,7 +365,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={6} md={4}>
                     <ControlledInput
-                      filled={true}
+                      filled={false}
                       name='postCode'
                       path='client.address.postCode'
                       label='Post Code'
@@ -335,7 +374,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={12} md={4}>
                     <ControlledInput
-                      filled={true}
+                      filled={false}
                       name='country'
                       path='client.address.country'
                       label='Country'
@@ -346,30 +385,29 @@ const InvoiceEditForm = ({
                 <Grid item container columnSpacing={3}>
                   <Grid item xs={12} md={6}>
                     <Controller
-                      name='date'
+                      name='createdAt'
                       control={control}
-                      defaultValue={invoice.createdAt}
+                      defaultValue={new Date()}
                       rules={{
                         required: "can't be empty",
                       }}
                       render={({ field }) => (
-                        <FormControl fullWidth error={!!errors.date}>
-                          <InputLabel htmlFor='date'>
+                        <FormControl fullWidth error={!!errors.createdAt}>
+                          <InputLabel htmlFor='createdAt'>
                             Invoice Date
                             <Typography variant='overline'>
-                              {errors.date?.message}
+                              {errors.createdAt?.message}
                             </Typography>
                           </InputLabel>
                           <LocalizationProvider dateAdapter={AdapterDateFns}>
                             <DesktopDatePicker
                               value={field.value}
                               onChange={(e) => field.onChange(e)}
-                              disabled
                               renderInput={(params) => (
                                 <CustomTextField
                                   {...params}
                                   type='date'
-                                  error={!!errors.date}
+                                  error={!!errors.createdAt}
                                 />
                               )}
                             ></DesktopDatePicker>
@@ -383,7 +421,7 @@ const InvoiceEditForm = ({
                     <Controller
                       name='paymentTerms'
                       control={control}
-                      defaultValue={invoice.paymentTerms}
+                      defaultValue={30}
                       rules={{
                         required: "can't be empty",
                       }}
@@ -433,7 +471,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={12}>
                     <ControlledInput
-                      filled={true}
+                      filled={false}
                       name='description'
                       path='description'
                       label='Project Description'
@@ -563,23 +601,30 @@ const InvoiceEditForm = ({
                     </Grid>
                   )}
                 </Grid>
-                <Grid container item spacing={1} justifyContent='end'>
-                  <Grid item>
+                <Grid container item justifyContent='space-between'>
+                  <Grid item xs={6}>
                     <CustomButton
-                      version='slate'
-                      onClick={() => setShowEditForm(false)}
+                      version='grey'
+                      onClick={() => setShowCreateForm(false)}
                     >
-                      Cancel
+                      Discard
                     </CustomButton>
                   </Grid>
-                  <Grid item>
-                    <CustomButton
-                      type='submit'
-                      version='purple'
-                      onClick={() => setValidating(true)}
-                    >
-                      Save Changes
-                    </CustomButton>
+                  <Grid container item xs={6} spacing={1} justifyContent='end'>
+                    <Grid item>
+                      <CustomButton version='dark' onClick={saveDraft}>
+                        Save as Draft
+                      </CustomButton>
+                    </Grid>
+                    <Grid item>
+                      <CustomButton
+                        type='submit'
+                        version='purple'
+                        onClick={() => setValidating(true)}
+                      >
+                        {'Save & Send'}
+                      </CustomButton>
+                    </Grid>
                   </Grid>
                 </Grid>
               </FormProvider>
@@ -591,4 +636,4 @@ const InvoiceEditForm = ({
   )
 }
 
-export default InvoiceEditForm
+export default InvoiceCreateForm

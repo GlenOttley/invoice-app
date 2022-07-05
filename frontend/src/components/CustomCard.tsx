@@ -2,7 +2,7 @@ import { styled, Card, CardProps } from '@mui/material'
 
 const CustomCard = styled(Card)<CardProps>(({ theme }) => ({
   '&.MuiCard-root': {
-    boxShadow: 'rgba(0, 0, 0, 0.04) 0px 3px 5px;',
+    boxShadow: '0 10px 10px -10px rgba(72, 84, 159, 0.10)',
     borderRadius: '8px',
   },
 }))

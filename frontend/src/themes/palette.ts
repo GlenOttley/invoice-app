@@ -47,6 +47,9 @@ export const paletteDark = {
     primary: '#ffff',
     secondary: '#dfe3fa',
   },
+  warning: {
+    ...paletteLight.warning,
+  },
   grey: {
     ...paletteLight.grey,
   },

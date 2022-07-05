@@ -7,7 +7,6 @@ import {
 } from 'react-hook-form'
 import { Typography, InputLabel, FormControl } from '@mui/material'
 import CustomTextField from './CustomTextField'
-import _ from 'lodash'
 
 interface ComponentProps extends UseControllerProps {
   defaultValue: string | number
@@ -25,7 +24,11 @@ const ControlledItemInput = ({
   const {
     control,
     formState: { errors },
-  }: { control: Control; formState: { errors: any } } = useFormContext()
+  }: {
+    control: Control
+    watch: any
+    formState: { errors: any }
+  } = useFormContext()
 
   return (
     <Controller
@@ -38,7 +41,7 @@ const ControlledItemInput = ({
       }}
       render={({ field }) => (
         <FormControl fullWidth error={!!errors?.items?.[index]?.[name]}>
-          <InputLabel htmlFor={name}>
+          <InputLabel htmlFor={`items.${index}.${name}`}>
             {label}
             <Typography variant='overline'>
               {errors?.items?.[index]?.[name]?.message}
@@ -47,15 +50,23 @@ const ControlledItemInput = ({
           {name === 'name' ? (
             <CustomTextField
               {...field}
-              type='text'
               error={!!errors?.items?.[index]?.[name]}
+            />
+          ) : name === 'quantity' ? (
+            <CustomTextField
+              {...field}
+              type='tel'
+              inputMode='numeric'
+              error={!!errors?.items?.[index]?.[name]}
+              // onChange={({ target }) => field.onChange(+target.value)}
             />
           ) : (
             <CustomTextField
               {...field}
-              type='number'
+              // type='tel'
+              inputMode='numeric'
               error={!!errors?.items?.[index]?.[name]}
-              onChange={({ target }) => field.onChange(+target.value)}
+              // onChange={({ target }) => field.onChange(+target.value)}
             />
           )}
         </FormControl>
