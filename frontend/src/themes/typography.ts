@@ -61,5 +61,6 @@ export const typography = {
     // letterSpacing: '0.21px'
     color: '#ec5757',
     textTransform: 'none' as const,
+    display: 'block',
   },
 }

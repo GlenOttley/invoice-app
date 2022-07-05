@@ -4,4 +4,6 @@ import IUser from './userInterface'
 //   extends Omit<IUser, '_id' | 'password' | 'invoices'> {}
 
 export default interface IClient
-  extends Omit<IUser, 'image' | 'password' | 'invoices'> {}
+  extends Omit<IUser, 'image' | 'password' | 'invoices'> {
+  // fieldName?: string
+}

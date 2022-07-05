@@ -31,12 +31,19 @@ export const components = {
       },
     },
   },
+  MuiPaper: {
+    styleOverrides: {
+      root: {
+        // boxShadow: '0 10px 20px 0 rgba(72, 84, 159, 0.25)',
+      },
+    },
+  },
   MuiMenuItem: {
     styleOverrides: {
       root: {
         fontWeight: '600',
-        paddingTop: '4px',
-        paddingBottom: '4px',
+        padding: '16px 24px',
+
         '&:hover': {
           color: '#7c5dfa',
           backgroundColor: 'transparent',

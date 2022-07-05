@@ -1,8 +1,8 @@
 const letters: string = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
 const numbers: string = '0123456789'
-let id = ''
 
 const generateID = () => {
+  let id = ''
   for (let i = 0; i < 2; i++) {
     id += letters.charAt(Math.floor(Math.random() * letters.length))
   }

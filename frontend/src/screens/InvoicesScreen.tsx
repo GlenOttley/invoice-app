@@ -1,5 +1,5 @@
-import { useEffect } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link, useNavigate } from 'react-router-dom'
 import { useAppSelector, useAppDispatch } from '../app/hooks'
 import { getInvoices, selectInvoices } from '../features/invoices/invoicesSlice'
 import { selectUser } from '../features/user/userSlice'
@@ -17,13 +17,16 @@ import {
   Typography,
   Button,
   Grid,
+  Drawer,
 } from '@mui/material'
 import Image from 'mui-image'
+import InvoiceCreateForm from '../components/InvoiceCreateForm'
 
 const InvoicesScreen = (): JSX.Element => {
   const theme = useTheme()
   const dispatch = useAppDispatch()
   const select = useAppSelector
+  const navigate = useNavigate()
 
   const screenSm = useMediaQuery(theme.breakpoints.up('sm'))
 
@@ -41,6 +44,8 @@ const InvoicesScreen = (): JSX.Element => {
 
   const filteredInvoices = useAppSelector(selectFilteredInvoices)
 
+  const [showCreateForm, setShowCreateForm] = useState(false)
+
   // fetch invoices if logged in
   useEffect(() => {
     if (userInfo) {
@@ -49,7 +54,6 @@ const InvoicesScreen = (): JSX.Element => {
   }, [dispatch, userInfo])
 
   return (
-    // TO DO: Refactor this using MUI Grid
     <div className='invoices-screen'>
       <Grid
         container
@@ -77,6 +81,9 @@ const InvoicesScreen = (): JSX.Element => {
           <FilterMenu />
 
           <Button
+            onClick={() =>
+              userInfo ? setShowCreateForm(true) : navigate('/login')
+            }
             variant='contained'
             className='btn--plus'
             sx={{
@@ -146,6 +153,33 @@ const InvoicesScreen = (): JSX.Element => {
           </Grid>
         )}
       </Grid>
+
+      <Drawer
+        open={showCreateForm}
+        onClose={() => setShowCreateForm(false)}
+        anchor='left'
+        sx={{
+          [`& .MuiDrawer-paper`]: {
+            top: theme.variables.header.offset.xs,
+            height: 'calc(100% - 72px)',
+            width: '100%',
+            boxSizing: 'border-box',
+            [theme.breakpoints.up('md')]: {
+              borderTopRightRadius: '20px',
+              borderBottomRightRadius: '20px',
+              top: theme.variables.header.offset.md,
+              width: '616px',
+            },
+            [theme.breakpoints.up('lg')]: {
+              top: 0,
+              height: '100%',
+              width: `calc(616px + ${theme.variables.header.offset.lg})`,
+            },
+          },
+        }}
+      >
+        <InvoiceCreateForm setShowCreateForm={setShowCreateForm} />
+      </Drawer>
     </div>
   )
 }

@@ -18,9 +18,7 @@ declare module '@mui/material/styles' {
     }
     palette: {
       mode: PaletteMode
-      shadows: {
-        1: string
-      }
+
       background: {
         default: string
         paper: string

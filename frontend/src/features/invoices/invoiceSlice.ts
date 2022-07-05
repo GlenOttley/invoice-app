@@ -8,12 +8,14 @@ interface IInvoiceState {
   invoice: IInvoice
   loading: boolean
   error: string | null
+  successCreate: boolean
 }
 
 const initialState: IInvoiceState = {
   invoice: {} as IInvoice,
   loading: true,
   error: null,
+  successCreate: false,
 }
 
 export const getInvoice = createAsyncThunk(
@@ -29,6 +31,30 @@ export const getInvoice = createAsyncThunk(
         },
       }
       const { data } = await axios.get(`/api/invoices/${id}`, config)
+      return data
+    } catch (err: any) {
+      let error: AxiosError<any> = err
+      if (!error.response) {
+        throw err
+      }
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
+export const createInvoice = createAsyncThunk(
+  'invoices/createInvoice',
+  async (invoice: IInvoice, { getState, rejectWithValue }) => {
+    try {
+      const { user } = getState() as { user: IUserState }
+      const { userInfo } = user as { userInfo: IUserInfo }
+
+      const config = {
+        headers: {
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+      const { data } = await axios.post(`/api/invoices`, invoice, config)
       return data
     } catch (err: any) {
       let error: AxiosError<any> = err
@@ -94,7 +120,12 @@ export const deleteInvoice = createAsyncThunk(
 export const invoiceSlice = createSlice({
   name: 'invoice',
   initialState,
-  reducers: {},
+  reducers: {
+    invoiceCreateReset: (state) => {
+      state.successCreate = false
+    },
+  },
+
   extraReducers: (builder) => {
     builder
       // GET INVOICE
@@ -115,6 +146,24 @@ export const invoiceSlice = createSlice({
         }
         state.loading = false
         state.invoice = {} as IInvoice
+      })
+      // CREATE INVOICE
+      .addCase(createInvoice.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(createInvoice.fulfilled, (state, action) => {
+        state.invoice = action.payload
+        state.successCreate = true
+        state.loading = false
+      })
+      .addCase(createInvoice.rejected, (state, action: any) => {
+        if (action.create.payload) {
+          state.error = action.payload.message
+        } else {
+          state.error = action.error.message
+        }
+        state.loading = false
       })
       // UPDATE INVOICE
       .addCase(updateInvoice.pending, (state) => {
@@ -157,4 +206,5 @@ export const invoiceSlice = createSlice({
 
 export const initialInvoiceState = invoiceSlice.getInitialState()
 export const selectInvoice = (state: RootState) => state.invoice
+export const { invoiceCreateReset } = invoiceSlice.actions
 export default invoiceSlice.reducer
