@@ -35,14 +35,14 @@ import Loader from './Loader'
 import Message from './Message'
 
 import _ from 'lodash'
+import { useNavigate } from 'react-router-dom'
 import {
   createInvoice,
-  selectInvoice,
   invoiceCreateReset,
+  selectInvoice,
 } from '../features/invoices/invoiceSlice'
-import toPriceValue from '../utils/toPriceValue'
 import generateId from '../utils/generateId'
-import { useNavigate } from 'react-router-dom'
+import toPriceValue from '../utils/toPriceValue'
 
 interface IInvoiceCreateFormProps {
   setShowCreateForm: React.Dispatch<SetStateAction<boolean>>
@@ -70,8 +70,6 @@ const InvoiceCreateForm = ({
   const select = useAppSelector
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
-
-  const { userInfo, loading, error } = select(selectUser)
 
   const [validating, setValidating] = useState<boolean>(false)
 
@@ -141,8 +139,8 @@ const InvoiceCreateForm = ({
     control,
   })
 
-  const invoiceState = select(selectInvoice)
-  const { invoice, successCreate } = invoiceState
+  const { userInfo, loading, error } = select(selectUser)
+  const { invoice, successCreate } = select(selectInvoice)
 
   const saveDraft = () => {
     const id = generateId()
@@ -323,6 +321,7 @@ const InvoiceCreateForm = ({
 
                   <Grid item xs={12}>
                     <ControlledInput
+                      section='invoice'
                       filled={false}
                       name='name'
                       path='client.name'
@@ -332,6 +331,7 @@ const InvoiceCreateForm = ({
 
                   <Grid item xs={12}>
                     <ControlledInput
+                      section='invoice'
                       filled={false}
                       name='email'
                       path='client.email'
@@ -347,6 +347,7 @@ const InvoiceCreateForm = ({
 
                   <Grid item xs={12}>
                     <ControlledInput
+                      section='invoice'
                       filled={false}
                       name='street'
                       path='client.address.street'
@@ -356,6 +357,7 @@ const InvoiceCreateForm = ({
 
                   <Grid item xs={6} md={4}>
                     <ControlledInput
+                      section='invoice'
                       filled={false}
                       name='city'
                       path='client.address.city'
@@ -365,6 +367,7 @@ const InvoiceCreateForm = ({
 
                   <Grid item xs={6} md={4}>
                     <ControlledInput
+                      section='invoice'
                       filled={false}
                       name='postCode'
                       path='client.address.postCode'
@@ -374,6 +377,7 @@ const InvoiceCreateForm = ({
 
                   <Grid item xs={12} md={4}>
                     <ControlledInput
+                      section='invoice'
                       filled={false}
                       name='country'
                       path='client.address.country'
@@ -471,6 +475,7 @@ const InvoiceCreateForm = ({
 
                   <Grid item xs={12}>
                     <ControlledInput
+                      section='invoice'
                       filled={false}
                       name='description'
                       path='description'
@@ -602,7 +607,7 @@ const InvoiceCreateForm = ({
                   )}
                 </Grid>
                 <Grid container item justifyContent='space-between'>
-                  <Grid item xs={6}>
+                  <Grid item xs={3}>
                     <CustomButton
                       version='grey'
                       onClick={() => setShowCreateForm(false)}
@@ -610,7 +615,7 @@ const InvoiceCreateForm = ({
                       Discard
                     </CustomButton>
                   </Grid>
-                  <Grid container item xs={6} spacing={1} justifyContent='end'>
+                  <Grid container item xs={9} spacing={1} justifyContent='end'>
                     <Grid item>
                       <CustomButton version='dark' onClick={saveDraft}>
                         Save as Draft

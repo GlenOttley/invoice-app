@@ -9,13 +9,15 @@ interface IInvoiceState {
   loading: boolean
   error: string | null
   successCreate: boolean
+  successUpdate: boolean
 }
 
 const initialState: IInvoiceState = {
   invoice: {} as IInvoice,
-  loading: true,
+  loading: false,
   error: null,
   successCreate: false,
+  successUpdate: false,
 }
 
 export const getInvoice = createAsyncThunk(
@@ -121,8 +123,15 @@ export const invoiceSlice = createSlice({
   name: 'invoice',
   initialState,
   reducers: {
+    clearInvoice: () => {
+      localStorage.removeItem('invoice')
+      return initialState
+    },
     invoiceCreateReset: (state) => {
       state.successCreate = false
+    },
+    invoiceUpdateReset: (state) => {
+      state.successUpdate = false
     },
   },
 
@@ -206,5 +215,5 @@ export const invoiceSlice = createSlice({
 
 export const initialInvoiceState = invoiceSlice.getInitialState()
 export const selectInvoice = (state: RootState) => state.invoice
-export const { invoiceCreateReset } = invoiceSlice.actions
+export const { invoiceCreateReset, invoiceUpdateReset } = invoiceSlice.actions
 export default invoiceSlice.reducer

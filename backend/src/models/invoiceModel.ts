@@ -1,9 +1,9 @@
-import mongoose, { Schema } from 'mongoose'
-import { IInvoiceDB } from '../interfaces/invoiceInterface'
+import { Schema, model, Document } from 'mongoose'
 import clientSchema from '../schemas/clientSchema'
 import itemSchema from '../schemas/itemSchema'
+import IInvoice from '../interfaces/invoiceInterface'
 
-const invoiceSchema: Schema<IInvoiceDB> = new Schema({
+const invoiceSchema = new Schema({
   _id: {
     type: String,
   },
@@ -33,4 +33,6 @@ const invoiceSchema: Schema<IInvoiceDB> = new Schema({
   },
 })
 
-export default mongoose.model<IInvoiceDB>('Invoice', invoiceSchema)
+export interface SavedInvoiceDocument extends IInvoice, Omit<Document, '_id'> {}
+
+export default model<SavedInvoiceDocument>('Invoice', invoiceSchema)

@@ -14,6 +14,7 @@ export const filtersSlice = createSlice({
   name: 'filters',
   initialState,
   reducers: {
+    clearFilters: () => initialState,
     setStatus: (state, action: PayloadAction<Status>) => {
       state.status === action.payload
         ? (state.status = undefined)
@@ -24,7 +25,7 @@ export const filtersSlice = createSlice({
 })
 
 export const selectFilters = (state: RootState) => state.filters
-export const { setStatus } = filtersSlice.actions
+export const { setStatus, clearFilters } = filtersSlice.actions
 
 export default filtersSlice.reducer
 

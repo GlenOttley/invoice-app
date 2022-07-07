@@ -16,7 +16,7 @@ import {
 } from '@mui/material'
 import { DesktopDatePicker, LocalizationProvider } from '@mui/x-date-pickers'
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns'
-import React, { SetStateAction, useState } from 'react'
+import React, { SetStateAction, useEffect, useState } from 'react'
 import {
   Controller,
   FormProvider,
@@ -25,7 +25,11 @@ import {
   useForm,
 } from 'react-hook-form'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
-import { selectInvoice, updateInvoice } from '../features/invoices/invoiceSlice'
+import {
+  selectInvoice,
+  updateInvoice,
+  invoiceUpdateReset,
+} from '../features/invoices/invoiceSlice'
 import { selectUser } from '../features/user/userSlice'
 import IItem from '../interfaces/itemInterface'
 import ControlledInput from './ControlledInput'
@@ -36,6 +40,7 @@ import Loader from './Loader'
 import Message from './Message'
 import _ from 'lodash'
 import toPriceValue from '../utils/toPriceValue'
+import { useNavigate } from 'react-router-dom'
 
 interface IInvoiceEditFormProps {
   setShowEditForm: React.Dispatch<SetStateAction<boolean>>
@@ -60,9 +65,10 @@ const InvoiceEditForm = ({
   const theme = useTheme()
   const select = useAppSelector
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
 
-  const { userInfo } = select(selectUser)
-  const { invoice, loading, error } = select(selectInvoice)
+  const { userInfo, loading, error } = select(selectUser)
+  const { invoice, successUpdate } = select(selectInvoice)
 
   const [validating, setValidating] = useState<boolean>(false)
 
@@ -164,6 +170,13 @@ const InvoiceEditForm = ({
       setShowEditForm(false)
     }
   }
+
+  useEffect(() => {
+    if (successUpdate) {
+      dispatch(invoiceUpdateReset())
+      navigate(`/invoice/${invoice._id}`)
+    }
+  }, [successUpdate, dispatch, navigate, invoice])
 
   return (
     <Container
@@ -284,6 +297,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={12}>
                     <ControlledInput
+                      section='invoice'
                       filled={true}
                       name='name'
                       path='client.name'
@@ -293,6 +307,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={12}>
                     <ControlledInput
+                      section='invoice'
                       filled={true}
                       name='email'
                       path='client.email'
@@ -308,6 +323,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={12}>
                     <ControlledInput
+                      section='invoice'
                       filled={true}
                       name='street'
                       path='client.address.street'
@@ -317,6 +333,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={6} md={4}>
                     <ControlledInput
+                      section='invoice'
                       filled={true}
                       name='city'
                       path='client.address.city'
@@ -326,6 +343,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={6} md={4}>
                     <ControlledInput
+                      section='invoice'
                       filled={true}
                       name='postCode'
                       path='client.address.postCode'
@@ -335,6 +353,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={12} md={4}>
                     <ControlledInput
+                      section='invoice'
                       filled={true}
                       name='country'
                       path='client.address.country'
@@ -433,6 +452,7 @@ const InvoiceEditForm = ({
 
                   <Grid item xs={12}>
                     <ControlledInput
+                      section='invoice'
                       filled={true}
                       name='description'
                       path='description'

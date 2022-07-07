@@ -19,6 +19,7 @@ import Message from '../components/Message'
 import StatusBadge from '../components/StatusBadge'
 import { getInvoice, selectInvoice } from '../features/invoices/invoiceSlice'
 import { selectUser } from '../features/user/userSlice'
+import _ from 'lodash'
 
 const InvoiceScreen = (): JSX.Element => {
   const theme = useTheme()
@@ -64,7 +65,7 @@ const InvoiceScreen = (): JSX.Element => {
         <Message severity='error'>{error}</Message>
       ) : (
         userInfo &&
-        invoice && (
+        !_.isEmpty(invoice) && (
           <>
             <CustomCard sx={{ marginBottom: theme.spacing(2) }}>
               <CustomContainer version='xs'>

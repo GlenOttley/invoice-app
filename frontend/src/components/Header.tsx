@@ -1,9 +1,21 @@
-import { alpha, Box, PaletteMode, useTheme } from '@mui/material'
-import React, { SetStateAction } from 'react'
+import {
+  alpha,
+  Box,
+  PaletteMode,
+  useTheme,
+  Menu,
+  MenuItem,
+  IconButton,
+} from '@mui/material'
+import PersonIcon from '@mui/icons-material/Person'
+import React, { SetStateAction, useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useAppSelector } from '../app/hooks'
-import { selectUser } from '../features/user/userSlice'
+import { useAppSelector, useAppDispatch } from '../app/hooks'
+import { selectUser, clearUser } from '../features/user/userSlice'
 import HomeButton from './HomeButton'
+import { clearInvoices } from '../features/invoices/invoicesSlice'
+import { clearFilters } from '../features/filters/filtersSlice'
+import Image from 'mui-image'
 
 interface IHeaderProps {
   mode: PaletteMode
@@ -13,7 +25,24 @@ interface IHeaderProps {
 const Header = ({ mode, setMode }: IHeaderProps): JSX.Element => {
   const theme = useTheme()
   const user = useAppSelector(selectUser)
+  const dispatch = useAppDispatch()
   const { userInfo } = user
+
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null)
+  const open = Boolean(anchorEl)
+  const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
+    setAnchorEl(event.currentTarget)
+  }
+  const handleMenuClose = () => {
+    setAnchorEl(null)
+  }
+
+  const handleLogout = () => {
+    dispatch(clearUser())
+    dispatch(clearInvoices())
+    dispatch(clearFilters())
+    handleMenuClose()
+  }
 
   return (
     <Box
@@ -79,17 +108,74 @@ const Header = ({ mode, setMode }: IHeaderProps): JSX.Element => {
             }}
           ></Box>
           {userInfo ? (
-            <button className='user-button'>
-              <Link to='/profile'>
-                <img src={userInfo.image} alt='' />
-              </Link>
-            </button>
+            <>
+              <IconButton
+                id='user-button'
+                onClick={handleMenuOpen}
+                aria-controls={open ? 'user-menu' : undefined}
+                aria-haspopup='true'
+                aria-expanded={open ? 'true' : undefined}
+              >
+                {userInfo.image ? (
+                  <Image
+                    src={userInfo.image}
+                    alt={`${userInfo.name}'s avatar`}
+                    style={{
+                      borderRadius: '50%',
+                      width: '32px',
+                      height: '32px',
+                    }}
+                  />
+                ) : (
+                  <PersonIcon sx={{ color: 'grey.250', fontSize: '32px' }} />
+                )}
+              </IconButton>
+
+              <Menu
+                id='user-menu'
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleMenuClose}
+                MenuListProps={{
+                  'aria-labelledby': 'user-button',
+                }}
+              >
+                <Link to='/profile'>
+                  <MenuItem onClick={handleMenuClose}>Profile</MenuItem>
+                </Link>
+                <Link to='/'>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </Link>
+              </Menu>
+            </>
           ) : (
-            <button className='login-button'>
-              <Link to='/login'>
-                <i className='fas fa-user'></i>
-              </Link>
-            </button>
+            <>
+              <IconButton
+                id='login-button'
+                onClick={handleMenuOpen}
+                aria-controls={open ? 'login-menu' : undefined}
+                aria-haspopup='true'
+                aria-expanded={open ? 'true' : undefined}
+              >
+                <PersonIcon sx={{ color: 'grey.250', fontSize: '32px' }} />
+              </IconButton>
+              <Menu
+                id='login-menu'
+                anchorEl={anchorEl}
+                open={open}
+                onClose={handleMenuClose}
+                MenuListProps={{
+                  'aria-labelledby': 'login-button',
+                }}
+              >
+                <Link to='/signup'>
+                  <MenuItem onClick={handleMenuClose}>Sign Up</MenuItem>
+                </Link>
+                <Link to='/login'>
+                  <MenuItem onClick={handleMenuClose}>Login</MenuItem>
+                </Link>
+              </Menu>
+            </>
           )}
         </Box>
       </Box>

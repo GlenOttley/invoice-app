@@ -1,10 +1,12 @@
-import { Box, FormControl, InputLabel, Typography } from '@mui/material'
+import { Box, Grid, Typography } from '@mui/material'
 import { useEffect } from 'react'
-import { Controller, SubmitHandler, useForm } from 'react-hook-form'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
+import ControlledInput from '../components/ControlledInput'
 import CustomButton from '../components/CustomButton'
-import CustomTextField from '../components/CustomTextField'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
 import { loginUser, selectUser } from '../features/user/userSlice'
 
 const LoginScreen = (): JSX.Element => {
@@ -12,90 +14,95 @@ const LoginScreen = (): JSX.Element => {
   const navigate = useNavigate()
 
   const user = useAppSelector(selectUser)
-  const { userInfo } = user
+  const { loading, error, successLogin } = user
 
   interface IFormInput {
     email: string
     password: string
   }
 
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IFormInput>()
+  const methods = useForm<IFormInput>({
+    mode: 'onSubmit',
+  })
 
-  const handleLogin: SubmitHandler<IFormInput> = (data) => {
+  const { handleSubmit } = methods
+
+  const handleFormSubmit: SubmitHandler<IFormInput> = (data) => {
     dispatch(loginUser(data))
   }
 
   useEffect(() => {
-    if (userInfo) {
+    if (successLogin) {
       navigate('/')
     }
-  }, [userInfo, navigate])
+  }, [successLogin, navigate])
 
   return (
     <div className='login-screen'>
-      <div className='container'>
-        <Typography variant='h1'>Login</Typography>
+      {loading ? (
+        <Loader />
+      ) : (
+        <Box>
+          <Typography variant='h2' marginBottom={3}>
+            Log In
+          </Typography>
+          {error && <Message severity='error'>{error}</Message>}
+          <Grid
+            item
+            container
+            spacing={5}
+            component='form'
+            onSubmit={handleSubmit(handleFormSubmit)}
+          >
+            <FormProvider {...methods}>
+              <Grid item container columnSpacing={3}>
+                <Grid item xs={12}>
+                  <ControlledInput
+                    section='user'
+                    filled={false}
+                    name='email'
+                    path='email'
+                    label='Email'
+                    rules={{
+                      pattern: {
+                        value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                        message: 'please use a valid email address',
+                      },
+                    }}
+                  />
+                </Grid>
 
-        <Box component='form' onSubmit={handleSubmit(handleLogin)}>
-          <Controller
-            name='email'
-            control={control}
-            defaultValue=''
-            rules={{
-              required: "can't be empty",
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'please use a valid email address',
-              },
-            }}
-            render={({ field }) => (
-              <FormControl error={!!errors.email}>
-                <InputLabel htmlFor='email'>
-                  Email
-                  <Typography variant='overline'>
-                    {errors.email && errors.email.message}
-                  </Typography>
-                </InputLabel>
-                <CustomTextField
-                  {...field}
-                  type='email'
-                  error={!!errors.email}
-                />
-              </FormControl>
-            )}
-          />
+                <Grid item xs={12}>
+                  <ControlledInput
+                    section='user'
+                    filled={false}
+                    name='password'
+                    path='password'
+                    label='Password'
+                    type='password'
+                    rules={{
+                      required: "can't be empty",
+                    }}
+                  />
+                </Grid>
+              </Grid>
 
-          <Controller
-            name='password'
-            control={control}
-            defaultValue=''
-            rules={{ required: "can't be empty" }}
-            render={({ field }) => (
-              <FormControl error={!!errors.password}>
-                <InputLabel htmlFor='password'>
-                  Password
-                  <Typography variant='overline'>
-                    {errors.password && errors.password.message}
-                  </Typography>
-                </InputLabel>
-                <CustomTextField
-                  {...field}
-                  type='password'
-                  error={!!errors.password}
-                />
-              </FormControl>
-            )}
-          />
-
-          <CustomButton type='submit' version='purple'>
-            Submit
-          </CustomButton>
+              <Grid container item spacing={1} justifyContent='end'>
+                <Grid item>
+                  <CustomButton version='slate' onClick={() => navigate('/')}>
+                    Cancel
+                  </CustomButton>
+                </Grid>
+                <Grid item>
+                  <CustomButton type='submit' version='purple'>
+                    Log In
+                  </CustomButton>
+                </Grid>
+              </Grid>
+            </FormProvider>
+          </Grid>
         </Box>
-      </div>
+      )}
     </div>
   )
 }

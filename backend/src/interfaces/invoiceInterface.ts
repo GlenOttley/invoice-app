@@ -1,4 +1,3 @@
-import { Document } from 'mongoose'
 import IItem from './itemInterface'
 import IClient from './clientInterface'
 
@@ -14,5 +13,3 @@ export default interface IInvoice {
   items: IItem[]
   total: number
 }
-
-export interface IInvoiceDB extends IInvoice, Omit<Document, '_id'> {}
