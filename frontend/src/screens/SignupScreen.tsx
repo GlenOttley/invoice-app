@@ -5,7 +5,7 @@ import CustomButton from '../components/CustomButton'
 import {
   userUpdateReset,
   selectUser,
-  updateUser,
+  createUser,
 } from '../features/user/userSlice'
 import { SubmitHandler, useForm, FormProvider } from 'react-hook-form'
 import ControlledInput from '../components/ControlledInput'
@@ -18,13 +18,13 @@ import IUser from '../interfaces/userInterface'
 export interface IFormInput
   extends Omit<IUser, '_id' | 'invoices' | 'token' | 'image'> {}
 
-const ProfileScreen = (): JSX.Element => {
+const SignupScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const select = useAppSelector
   const navigate = useNavigate()
 
   const userState = select(selectUser)
-  const { userInfo, loading, error, successUpdate } = userState
+  const { loading, error, successCreate } = userState
 
   const [validating, setValidating] = useState<boolean>(false)
 
@@ -49,7 +49,7 @@ const ProfileScreen = (): JSX.Element => {
   const handleFormSubmit: SubmitHandler<IFormInput> = (data: IFormInput) => {
     if (validate(data)) {
       dispatch(
-        updateUser({
+        createUser({
           email: data.email,
           password: data.password,
           name: data.name,
@@ -65,10 +65,11 @@ const ProfileScreen = (): JSX.Element => {
   }
 
   useEffect(() => {
-    if (successUpdate) {
+    if (successCreate) {
       dispatch(userUpdateReset())
+      navigate('/')
     }
-  }, [successUpdate, dispatch])
+  }, [successCreate, dispatch, navigate])
 
   return (
     <div className='profile-screen'>
@@ -79,7 +80,7 @@ const ProfileScreen = (): JSX.Element => {
       ) : (
         <Box>
           <Typography variant='h2' marginBottom={3}>
-            Hi, {userInfo?.name}
+            Sign Up
           </Typography>
 
           <Grid
@@ -93,14 +94,24 @@ const ProfileScreen = (): JSX.Element => {
               <Grid item container columnSpacing={3}>
                 <Grid item xs={12}>
                   <Typography variant='h4' color='primary.purple'>
-                    Login Details
+                    User Details
                   </Typography>
                 </Grid>
 
                 <Grid item xs={12}>
                   <ControlledInput
                     section='user'
-                    filled={true}
+                    filled={false}
+                    name='name'
+                    path='name'
+                    label='Name'
+                  />
+                </Grid>
+
+                <Grid item xs={12}>
+                  <ControlledInput
+                    section='user'
+                    filled={false}
                     name='email'
                     path='email'
                     label='Email'
@@ -121,6 +132,9 @@ const ProfileScreen = (): JSX.Element => {
                     path='password'
                     label='Password'
                     type='password'
+                    rules={{
+                      required: "can't be empty",
+                    }}
                   />
                 </Grid>
 
@@ -133,6 +147,7 @@ const ProfileScreen = (): JSX.Element => {
                     label='Confirm Password'
                     type='password'
                     rules={{
+                      required: "can't be empty",
                       validate: (val: string) => {
                         if (watch('password') !== val) {
                           return 'Your passwords do not match'
@@ -153,17 +168,7 @@ const ProfileScreen = (): JSX.Element => {
                 <Grid item xs={12}>
                   <ControlledInput
                     section='user'
-                    filled={true}
-                    name='name'
-                    path='name'
-                    label='Name'
-                  />
-                </Grid>
-
-                <Grid item xs={12}>
-                  <ControlledInput
-                    section='user'
-                    filled={true}
+                    filled={false}
                     name='address.street'
                     path='address.street'
                     label='Street'
@@ -173,7 +178,7 @@ const ProfileScreen = (): JSX.Element => {
                 <Grid item xs={6} md={4}>
                   <ControlledInput
                     section='user'
-                    filled={true}
+                    filled={false}
                     name='address.city'
                     path='address.city'
                     label='City'
@@ -183,7 +188,7 @@ const ProfileScreen = (): JSX.Element => {
                 <Grid item xs={6} md={4}>
                   <ControlledInput
                     section='user'
-                    filled={true}
+                    filled={false}
                     name='address.postCode'
                     path='address.postCode'
                     label='Post Code'
@@ -193,7 +198,7 @@ const ProfileScreen = (): JSX.Element => {
                 <Grid item xs={12} md={4}>
                   <ControlledInput
                     section='user'
-                    filled={true}
+                    filled={false}
                     name='address.country'
                     path='address.country'
                     label='Country'
@@ -220,7 +225,7 @@ const ProfileScreen = (): JSX.Element => {
                     version='purple'
                     onClick={() => setValidating(true)}
                   >
-                    Save Changes
+                    Sign Up
                   </CustomButton>
                 </Grid>
               </Grid>
@@ -232,4 +237,4 @@ const ProfileScreen = (): JSX.Element => {
   )
 }
 
-export default ProfileScreen
+export default SignupScreen

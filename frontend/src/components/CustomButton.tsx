@@ -6,6 +6,10 @@ interface ICustomButtonProps extends ButtonProps {
 
 const CustomButton = styled(Button)<ICustomButtonProps>(
   ({ version, theme }) => ({
+    padding: '16px',
+    [theme.breakpoints.up('sm')]: {
+      padding: '16px 24px',
+    },
     ...(version === 'purple' && {
       color: 'white',
       backgroundColor: theme.palette.primary.purple,

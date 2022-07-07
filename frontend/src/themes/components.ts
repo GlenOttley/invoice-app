@@ -14,6 +14,16 @@ export const components = {
       },
     },
   },
+  MuiIconButton: {
+    styleOverrides: {
+      root: {
+        padding: 0,
+        '&:hover': {
+          backgroundColor: 'transparent',
+        },
+      },
+    },
+  },
   MuiInputLabel: {
     styleOverrides: {
       root: {

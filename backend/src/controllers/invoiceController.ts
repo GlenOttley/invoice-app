@@ -1,14 +1,13 @@
 import { Request, Response } from 'express'
 import asyncHandler from 'express-async-handler'
-import Invoice from '../models/invoiceModel'
-import { IInvoiceDB } from '../interfaces/invoiceInterface'
+import Invoice, { SavedInvoiceDocument } from '../models/invoiceModel'
 
 // @desc    Fetch all invoices
 // @route   GET /api/invoices
 // @access  Private / Admin
 const getInvoices = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
-    const invoices: IInvoiceDB[] = await Invoice.find({})
+    const invoices: SavedInvoiceDocument[] = await Invoice.find({})
     if (invoices.length > 0) {
       res.status(200).json(invoices)
     } else {
@@ -23,7 +22,9 @@ const getInvoices = asyncHandler(
 // @access Private
 const getInvoiceById = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
-    const invoice: IInvoiceDB | null = await Invoice.findById(req.params.id)
+    const invoice: SavedInvoiceDocument | null = await Invoice.findById(
+      req.params.id
+    )
 
     if (invoice) {
       res.status(200).json(invoice)
@@ -39,7 +40,7 @@ const getInvoiceById = asyncHandler(
 // @access  Private
 const getMyInvoices = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
-    const invoices: IInvoiceDB[] = await Invoice.find({
+    const invoices: SavedInvoiceDocument[] = await Invoice.find({
       sender: req.user._id,
     })
     res.status(200).json(invoices)
@@ -63,7 +64,7 @@ const createInvoice = asyncHandler(
       total,
     } = req.body
 
-    const invoice: IInvoiceDB = new Invoice({
+    const invoice: SavedInvoiceDocument = new Invoice({
       _id,
       createdAt,
       paymentTerms,
@@ -131,13 +132,16 @@ const updateInvoice = asyncHandler(async (req: Request, res: Response) => {
 // @access Private
 const deleteInvoice = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
-    Invoice.findByIdAndDelete(req.params.id, (err: Error, docs: IInvoiceDB) => {
-      if (err) {
-        res.status(500).json(err)
-      } else {
-        res.status(200).json(`Invoice with id: ${docs._id} has been deleted`)
+    Invoice.findByIdAndDelete(
+      req.params.id,
+      (err: Error, docs: SavedInvoiceDocument) => {
+        if (err) {
+          res.status(500).json(err)
+        } else {
+          res.status(200).json(`Invoice with id: ${docs._id} has been deleted`)
+        }
       }
-    })
+    )
   }
 )
 

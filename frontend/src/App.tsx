@@ -5,6 +5,7 @@ import InvoicesScreen from './screens/InvoicesScreen'
 import InvoiceScreen from './screens/InvoiceScreen'
 import LoginScreen from './screens/LoginScreen'
 import ProfileScreen from './screens/ProfileScreen'
+import SignupScreen from './screens/SignupScreen'
 import {
   ThemeProvider,
   CssBaseline,
@@ -37,6 +38,7 @@ const App = (): JSX.Element => {
                 <Route path='/' element={<InvoicesScreen />} />
                 <Route path='/login' element={<LoginScreen />} />
                 <Route path='/profile' element={<ProfileScreen />} />
+                <Route path='/signup' element={<SignupScreen />} />
                 <Route path='/invoice'>
                   <Route path=':id' element={<InvoiceScreen />} />
                 </Route>

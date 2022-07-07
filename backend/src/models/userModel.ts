@@ -1,9 +1,9 @@
-import mongoose, { Schema } from 'mongoose'
+import { Schema, model, Document } from 'mongoose'
 import bcrypt from 'bcryptjs'
-import { IUserDB } from '../interfaces/userInterface'
 import addressSchema from '../schemas/addressSchema'
+import IUser from '../interfaces/userInterface'
 
-const userSchema: Schema<IUserDB> = new Schema({
+const userSchema = new Schema({
   _id: {
     type: String,
   },
@@ -35,4 +35,17 @@ userSchema.methods.matchPassword = async function (enteredPassword: string) {
   return await bcrypt.compare(enteredPassword, this.password)
 }
 
-export default mongoose.model<IUserDB>('User', userSchema)
+// model middleware for hashing passwords
+userSchema.pre('save', async function (next) {
+  if (!this.isModified('password')) {
+    next()
+  }
+  const salt = await bcrypt.genSalt(10)
+  this.password = await bcrypt.hash(this.password, salt)
+})
+
+export interface SavedUserDocument extends Omit<IUser, '_id'>, Document {
+  matchPassword(enteredPassword: string): boolean
+}
+
+export default model<SavedUserDocument>('User', userSchema)

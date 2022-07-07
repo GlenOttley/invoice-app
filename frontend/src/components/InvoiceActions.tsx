@@ -60,9 +60,11 @@ const InvoiceActions = (): JSX.Element => {
         </CustomButton>
       </Grid>
       <Grid item>
-        <CustomButton version='purple' onClick={handleStatusChange}>
-          {invoice.status === 'paid' ? 'Mark as Pending' : 'Mark as Paid'}
-        </CustomButton>
+        {invoice.status !== 'draft' && (
+          <CustomButton version='purple' onClick={handleStatusChange}>
+            {invoice.status === 'paid' ? 'Mark as Pending' : 'Mark as Paid'}
+          </CustomButton>
+        )}
       </Grid>
       <Dialog
         open={showDeleteDialog}
