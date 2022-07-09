@@ -2,7 +2,7 @@
   "name": "invoice-app",
   "version": "1.0.0",
   "description": "Invoice Application",
-  "main": "src/server.ts",
+  "main": "backend/dist/server.js",
   "engines": {
     "node": "16.x",
     "npm": "7.x"
