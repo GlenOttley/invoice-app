@@ -15,7 +15,7 @@
     "data:destroy": "ts-node backend/src/seeder.ts -d",
     "data:find": "ts-node backend/src/seeder.ts -f",
     "start": "node backend/dist/server.js",
-    "postinstall": "tsc",
+    "postinstall": "tsc -p backend/tsconfig.json",
     "watch-node": "nodemon backend/dist/server.js",
     "watch-ts": "tsc -w",
     "deploy": "git add . && git commit -m Heroku && git push heroku main",
