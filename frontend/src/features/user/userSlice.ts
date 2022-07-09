@@ -20,6 +20,7 @@ export interface IUserState {
   successLogin: boolean
   successUpdate: boolean
   successCreate: boolean
+  successDelete: boolean
 }
 
 interface IUserLoginData {
@@ -33,6 +34,7 @@ const initialState: IUserState = {
   successLogin: false,
   successUpdate: false,
   successCreate: false,
+  successDelete: false,
 }
 
 export const loginUser = createAsyncThunk(
@@ -115,6 +117,31 @@ export const createUser = createAsyncThunk(
   }
 )
 
+export const deleteUser = createAsyncThunk(
+  'user/deleteUser',
+  async (_, { getState, rejectWithValue }) => {
+    try {
+      const { user } = getState() as { user: IUserState }
+      const { userInfo } = user as { userInfo: IUserInfo }
+
+      const config = {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${userInfo.token}`,
+        },
+      }
+
+      await axios.delete(`/api/users/${userInfo._id}`, config)
+    } catch (err: any) {
+      let error: AxiosError<any> = err
+      if (!error.response) {
+        throw err
+      }
+      return rejectWithValue(error.response.data)
+    }
+  }
+)
+
 export const userSlice = createSlice({
   name: 'user',
   initialState,
@@ -122,6 +149,9 @@ export const userSlice = createSlice({
     clearUser: () => {
       localStorage.removeItem('user')
       return initialState
+    },
+    clearUserError: (state) => {
+      state.error = null
     },
     userUpdateReset: (state) => {
       state.successUpdate = false
@@ -195,12 +225,35 @@ export const userSlice = createSlice({
         }
         state.loading = false
       })
+
+      // DELETE USER
+      .addCase(deleteUser.pending, (state) => {
+        state.loading = true
+        state.error = null
+      })
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.successDelete = true
+        state.loading = false
+      })
+      .addCase(deleteUser.rejected, (state, action: any) => {
+        if (action.payload) {
+          state.error = action.payload.message
+        } else {
+          state.error = action.error.message
+        }
+        state.loading = false
+      })
   },
 })
 
 export const initialUserState = userSlice.getInitialState()
 export const selectUser = (state: RootState) => state.user
-export const { clearUser, userUpdateReset, userLoginReset, userCreateReset } =
-  userSlice.actions
+export const {
+  clearUser,
+  clearUserError,
+  userUpdateReset,
+  userLoginReset,
+  userCreateReset,
+} = userSlice.actions
 
 export default userSlice.reducer

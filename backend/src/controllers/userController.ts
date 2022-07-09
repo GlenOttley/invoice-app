@@ -101,4 +101,22 @@ const createUser = asyncHandler(async (req, res) => {
   }
 })
 
-export { authUser, updateUser, createUser }
+// @desc Delete a user
+// @route DELETE /api/users/:id
+// @access Private
+const deleteUser = asyncHandler(
+  async (req: Request, res: Response): Promise<void> => {
+    User.findByIdAndDelete(
+      req.params.id,
+      (err: Error, docs: SavedUserDocument) => {
+        if (err) {
+          res.status(404).json('User not found')
+        } else {
+          res.status(200).json(`User with id: ${docs._id} has been deleted`)
+        }
+      }
+    )
+  }
+)
+
+export { authUser, updateUser, createUser, deleteUser }

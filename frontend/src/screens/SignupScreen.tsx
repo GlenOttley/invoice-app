@@ -1,22 +1,22 @@
-import { Typography, Grid, Box } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../app/hooks'
-import CustomButton from '../components/CustomButton'
-import {
-  userUpdateReset,
-  selectUser,
-  createUser,
-} from '../features/user/userSlice'
-import { SubmitHandler, useForm, FormProvider } from 'react-hook-form'
-import ControlledInput from '../components/ControlledInput'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
+import { Box, Grid, Typography } from '@mui/material'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
+import ControlledInput from '../components/ControlledInput'
+import CustomButton from '../components/CustomButton'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
+import {
+  clearUserError,
+  createUser,
+  selectUser,
+  userUpdateReset,
+} from '../features/user/userSlice'
 import IUser from '../interfaces/userInterface'
 
-export interface IFormInput
-  extends Omit<IUser, '_id' | 'invoices' | 'token' | 'image'> {}
+export interface IFormInput extends Omit<IUser, '_id' | 'invoices' | 'token'> {}
 
 const SignupScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
@@ -65,6 +65,7 @@ const SignupScreen = (): JSX.Element => {
   }
 
   useEffect(() => {
+    dispatch(clearUserError())
     if (successCreate) {
       dispatch(userUpdateReset())
       navigate('/')

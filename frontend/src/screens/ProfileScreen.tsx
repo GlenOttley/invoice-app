@@ -1,4 +1,11 @@
-import { Typography, Grid, Box } from '@mui/material'
+import {
+  Typography,
+  Grid,
+  Box,
+  Dialog,
+  DialogActions,
+  useTheme,
+} from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { useAppDispatch, useAppSelector } from '../app/hooks'
 import CustomButton from '../components/CustomButton'
@@ -6,6 +13,8 @@ import {
   userUpdateReset,
   selectUser,
   updateUser,
+  deleteUser,
+  clearUser,
 } from '../features/user/userSlice'
 import { SubmitHandler, useForm, FormProvider } from 'react-hook-form'
 import ControlledInput from '../components/ControlledInput'
@@ -14,6 +23,9 @@ import Message from '../components/Message'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
 import IUser from '../interfaces/userInterface'
+import CustomContainer from '../components/CustomContainer'
+import { clearInvoices } from '../features/invoices/invoicesSlice'
+import { clearInvoice } from '../features/invoices/invoiceSlice'
 
 export interface IFormInput
   extends Omit<IUser, '_id' | 'invoices' | 'token' | 'image'> {}
@@ -22,15 +34,23 @@ const ProfileScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
   const select = useAppSelector
   const navigate = useNavigate()
+  const theme = useTheme()
 
   const userState = select(selectUser)
-  const { userInfo, loading, error, successUpdate } = userState
+  const { userInfo, loading, error, successUpdate, successDelete } = userState
 
   const [validating, setValidating] = useState<boolean>(false)
 
   const methods = useForm<IFormInput>({
     mode: 'onSubmit',
   })
+
+  const [showDeleteDialog, setShowDeleteDialog] = useState<boolean>(false)
+
+  const handleDeleteAccount = () => {
+    setShowDeleteDialog(false)
+    dispatch(deleteUser())
+  }
 
   const {
     handleSubmit,
@@ -68,7 +88,13 @@ const ProfileScreen = (): JSX.Element => {
     if (successUpdate) {
       dispatch(userUpdateReset())
     }
-  }, [successUpdate, dispatch])
+    if (successDelete) {
+      dispatch(clearUser())
+      dispatch(clearInvoices())
+      dispatch(clearInvoice())
+      navigate('/')
+    }
+  }, [successUpdate, successDelete, navigate, dispatch])
 
   return (
     <div className='profile-screen'>
@@ -201,33 +227,89 @@ const ProfileScreen = (): JSX.Element => {
                 </Grid>
               </Grid>
 
-              <Grid container item spacing={1} justifyContent='end'>
-                {validating && (
-                  <Grid item xs={12}>
-                    <Typography variant='overline'>
-                      {!_.isEmpty(errors) && '- All fields must be added'}
-                    </Typography>
-                  </Grid>
-                )}
-                <Grid item>
-                  <CustomButton version='slate' onClick={() => navigate('/')}>
-                    Cancel
+              <Grid container item alignItems='center'>
+                <Grid item xs={3}>
+                  <CustomButton
+                    version='peach'
+                    onClick={() => setShowDeleteDialog(true)}
+                  >
+                    Delete Account
                   </CustomButton>
                 </Grid>
-                <Grid item>
-                  <CustomButton
-                    type='submit'
-                    version='purple'
-                    onClick={() => setValidating(true)}
-                  >
-                    Save Changes
-                  </CustomButton>
+                <Grid
+                  container
+                  item
+                  xs={9}
+                  columnSpacing={1}
+                  justifyContent='end'
+                >
+                  {validating && (
+                    <Grid item xs={12}>
+                      <Typography variant='overline'>
+                        {!_.isEmpty(errors) && '- All fields must be added'}
+                      </Typography>
+                    </Grid>
+                  )}
+                  <Grid item>
+                    <CustomButton version='slate' onClick={() => navigate('/')}>
+                      Cancel
+                    </CustomButton>
+                  </Grid>
+                  <Grid item>
+                    <CustomButton
+                      type='submit'
+                      version='purple'
+                      onClick={() => setValidating(true)}
+                    >
+                      Save Changes
+                    </CustomButton>
+                  </Grid>
                 </Grid>
               </Grid>
             </FormProvider>
           </Grid>
         </Box>
       )}
+      <Dialog
+        open={showDeleteDialog}
+        onClose={() => setShowDeleteDialog(false)}
+      >
+        <CustomContainer
+          version='lg'
+          sx={{
+            backgroundColor:
+              theme.palette.mode === 'light'
+                ? 'white'
+                : theme.palette.grey[100],
+          }}
+        >
+          <Typography variant='h2' marginBottom={1}>
+            Cofirm Deletion
+          </Typography>
+
+          <Typography
+            variant='body1'
+            color='grey.300'
+            lineHeight={2}
+            marginBottom={3}
+          >
+            Are you sure you want to delete your account? This action cannot be
+            undone.
+          </Typography>
+
+          <DialogActions>
+            <CustomButton
+              version='grey'
+              onClick={() => setShowDeleteDialog(false)}
+            >
+              Cancel
+            </CustomButton>
+            <CustomButton version='peach' onClick={handleDeleteAccount}>
+              Delete
+            </CustomButton>
+          </DialogActions>
+        </CustomContainer>
+      </Dialog>
     </div>
   )
 }

@@ -16,6 +16,7 @@ import HomeButton from './HomeButton'
 import { clearInvoices } from '../features/invoices/invoicesSlice'
 import { clearFilters } from '../features/filters/filtersSlice'
 import Image from 'mui-image'
+import LoginIcon from '@mui/icons-material/Login'
 
 interface IHeaderProps {
   mode: PaletteMode
@@ -157,7 +158,7 @@ const Header = ({ mode, setMode }: IHeaderProps): JSX.Element => {
                 aria-haspopup='true'
                 aria-expanded={open ? 'true' : undefined}
               >
-                <PersonIcon sx={{ color: 'grey.250', fontSize: '32px' }} />
+                <LoginIcon sx={{ color: 'grey.250', fontSize: '32px' }} />
               </IconButton>
               <Menu
                 id='login-menu'

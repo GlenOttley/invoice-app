@@ -1,5 +1,6 @@
 import IItem from './itemInterface'
 import IClient from './clientInterface'
+import IAddress from './addressInterface'
 
 export default interface IInvoice {
   _id: string

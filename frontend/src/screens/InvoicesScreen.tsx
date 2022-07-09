@@ -21,6 +21,7 @@ import {
 } from '@mui/material'
 import Image from 'mui-image'
 import InvoiceCreateForm from '../components/InvoiceCreateForm'
+import _ from 'lodash'
 
 const InvoicesScreen = (): JSX.Element => {
   const theme = useTheme()
@@ -48,7 +49,7 @@ const InvoicesScreen = (): JSX.Element => {
 
   // fetch invoices if logged in
   useEffect(() => {
-    if (userInfo) {
+    if (!_.isEmpty(userInfo)) {
       dispatch(getInvoices())
     }
   }, [dispatch, userInfo])

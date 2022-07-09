@@ -256,6 +256,8 @@ const InvoiceEditForm = ({
                       </InputLabel>
                       <CustomTextField
                         disabled
+                        // fetch 'sender' in database call so that sender info does not change after
+                        // user profile is updated
                         value={userInfo.address.street}
                       />
                     </FormControl>

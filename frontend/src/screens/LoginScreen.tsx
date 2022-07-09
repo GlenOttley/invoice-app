@@ -7,7 +7,11 @@ import ControlledInput from '../components/ControlledInput'
 import CustomButton from '../components/CustomButton'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
-import { loginUser, selectUser } from '../features/user/userSlice'
+import {
+  clearUserError,
+  loginUser,
+  selectUser,
+} from '../features/user/userSlice'
 
 const LoginScreen = (): JSX.Element => {
   const dispatch = useAppDispatch()
@@ -32,10 +36,11 @@ const LoginScreen = (): JSX.Element => {
   }
 
   useEffect(() => {
+    dispatch(clearUserError())
     if (successLogin) {
       navigate('/')
     }
-  }, [successLogin, navigate])
+  }, [successLogin, navigate, dispatch])
 
   return (
     <div className='login-screen'>

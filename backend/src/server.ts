@@ -1,10 +1,12 @@
-import express, { Application, Request, Response, NextFunction } from 'express'
-import { notFound, errorHandler } from './middleware/errorMiddleware'
-import invoiceRoutes from './routes/invoiceRoutes'
-import userRoutes from './routes/userRoutes'
-import connectDB from './config/db'
 import dotenv from 'dotenv'
+import express, { Application, Request, Response } from 'express'
 import morgan from 'morgan'
+import connectDB from './config/db'
+import { errorHandler, notFound } from './middleware/errorMiddleware'
+import invoiceRoutes from './routes/invoiceRoutes'
+import uploadRoutes from './routes/uploadRoutes'
+import userRoutes from './routes/userRoutes'
+import path from 'path'
 
 dotenv.config({ path: __dirname + '/.env' })
 
@@ -23,6 +25,10 @@ app.get('/', (req: Request, res: Response) => {
 
 app.use('/api/invoices', invoiceRoutes)
 app.use('/api/users', userRoutes)
+app.use('/api/upload', uploadRoutes)
+
+// const __dirname = path.resolve()
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
 
 app.use(notFound)
 app.use(errorHandler)

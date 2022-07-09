@@ -215,5 +215,6 @@ export const invoiceSlice = createSlice({
 
 export const initialInvoiceState = invoiceSlice.getInitialState()
 export const selectInvoice = (state: RootState) => state.invoice
-export const { invoiceCreateReset, invoiceUpdateReset } = invoiceSlice.actions
+export const { invoiceCreateReset, invoiceUpdateReset, clearInvoice } =
+  invoiceSlice.actions
 export default invoiceSlice.reducer
