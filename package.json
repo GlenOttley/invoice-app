@@ -3,6 +3,10 @@
   "version": "1.0.0",
   "description": "Invoice Application",
   "main": "src/server.ts",
+  "engines": {
+    "node": "16.x",
+    "npm": "7.x"
+  },
   "scripts": {
     "start": "ts-node backend/src/server.ts",
     "server": "nodemon backend/src/server.ts",
