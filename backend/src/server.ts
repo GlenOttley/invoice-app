@@ -8,7 +8,7 @@ import uploadRoutes from './routes/uploadRoutes'
 import userRoutes from './routes/userRoutes'
 import path from 'path'
 
-dotenv.config({ path: __dirname + '/.env' })
+dotenv.config({ path: path.resolve() + '/.env' })
 
 const app: Application = express()
 app.use(express.json())
