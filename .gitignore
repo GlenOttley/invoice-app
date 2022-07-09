@@ -1,5 +1,5 @@
 # GLOBAL
-/frontend-mentor
+frontend-mentor
 node_modules
 
 # FRONTEND
@@ -16,6 +16,7 @@ node_modules
 
 # misc
 .DS_Store
+.env
 .env.local
 .env.development.local
 .env.test.local
@@ -26,5 +27,4 @@ yarn-debug.log*
 yarn-error.log*
 
 # BACKEND
-/backend/src/.env
 /backend/src/config

@@ -8,7 +8,7 @@ import uploadRoutes from './routes/uploadRoutes'
 import userRoutes from './routes/userRoutes'
 import path from 'path'
 
-dotenv.config({ path: __dirname + '/.env' })
+dotenv.config({ path: path.resolve() + '/.env' })
 
 const app: Application = express()
 app.use(express.json())
@@ -19,16 +19,25 @@ if (process.env.NODE_ENV === 'development') {
 
 connectDB()
 
-app.get('/', (req: Request, res: Response) => {
-  res.json('API is running...')
-})
+const __dirnameAlias = path.resolve()
 
 app.use('/api/invoices', invoiceRoutes)
 app.use('/api/users', userRoutes)
 app.use('/api/upload', uploadRoutes)
+app.use('/uploads', express.static(path.join(__dirnameAlias, '/uploads')))
 
-// const __dirname = path.resolve()
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')))
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static(path.join(__dirnameAlias, '/frontend/build')))
+  app.get('*', (req, res) =>
+    res.sendFile(
+      path.resolve(__dirnameAlias, 'frontend', 'build', 'index.html')
+    )
+  )
+} else {
+  app.get('/', (req: Request, res: Response) => {
+    res.json('API is running...')
+  })
+}
 
 app.use(notFound)
 app.use(errorHandler)
