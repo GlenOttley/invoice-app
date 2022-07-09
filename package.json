@@ -14,7 +14,8 @@
     "data:import": "ts-node backend/src/seeder.ts",
     "data:destroy": "ts-node backend/src/seeder.ts -d",
     "data:find": "ts-node backend/src/seeder.ts -f",
-    "heroku-prebuild": "tsc -p backend/tsconfig.json",
+    "tsc": "tsc",
+    "postinstall": "tsc -p backend/tsconfig.json",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
     "start": "node backend/dist/server.js",
     "deploy": "git add . && git commit -m Heroku && git push heroku main"
