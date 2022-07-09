@@ -4,18 +4,21 @@
   "description": "Invoice Application",
   "main": "src/server.ts",
   "engines": {
-    "ts-node": "10.x",
+    "node": "16.x",
     "npm": "7.x"
   },
   "scripts": {
-    "start": "ts-node backend/src/server.ts",
     "server": "nodemon backend/src/server.ts",
     "client": "npm start --prefix frontend",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
-    "build": "tsc -p .",
     "data:import": "ts-node backend/src/seeder.ts",
     "data:destroy": "ts-node backend/src/seeder.ts -d",
     "data:find": "ts-node backend/src/seeder.ts -f",
+    "start": "node backend/dist/server.js",
+    "postinstall": "tsc",
+    "watch-node": "nodemon backend/dist/server.js",
+    "watch-ts": "tsc -w",
+    "deploy": "git add . && git commit -m Heroku && git push heroku main",
     "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
   },
   "author": "Glen Ottley",
