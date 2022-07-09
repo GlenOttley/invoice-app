@@ -14,12 +14,10 @@
     "data:import": "ts-node backend/src/seeder.ts",
     "data:destroy": "ts-node backend/src/seeder.ts -d",
     "data:find": "ts-node backend/src/seeder.ts -f",
+    "build": "tsc -p backend/tsconfig.json",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend",
     "start": "node backend/dist/server.js",
-    "postinstall": "tsc -p backend/tsconfig.json",
-    "watch-node": "nodemon backend/dist/server.js",
-    "watch-ts": "tsc -w",
-    "deploy": "git add . && git commit -m Heroku && git push heroku main",
-    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
+    "deploy": "git add . && git commit -m Heroku && git push heroku main"
   },
   "author": "Glen Ottley",
   "license": "ISC",

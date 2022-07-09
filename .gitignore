@@ -5,14 +5,14 @@ node_modules
 # FRONTEND
 
 # dependencies
-/frontend/.pnp
+frontend/.pnp
 .pnp.js
 
 # testing
-/frontend/coverage
+frontend/coverage
 
 # production
-/frontend/build
+frontend/build
 
 # misc
 .DS_Store
@@ -27,5 +27,5 @@ yarn-debug.log*
 yarn-error.log*
 
 # BACKEND
-/backend/src/config
-/backend/dist
+backend/src/config
+backend/dist
