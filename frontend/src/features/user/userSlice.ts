@@ -29,20 +29,6 @@ interface IUserLoginData {
 }
 
 const initialState: IUserState = {
-  userInfo: {
-    _id: '61f5c55a8b500566a94331ae',
-    name: 'John Doe',
-    image: '/assets/images/image-avatar.jpg',
-    address: {
-      street: '19 Union Terrace',
-      city: 'London',
-      postCode: 'E1 3EZ',
-      country: 'United Kingdom',
-    },
-    email: 'johndoe@mail.com',
-    token:
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYxZjVjNTVhOGI1MDA1NjZhOTQzMzFhZSIsImlhdCI6MTY1NzQ3ODA0NywiZXhwIjoxNjYwMDcwMDQ3fQ.EACEpJaPRd9RoeaFOt3o-5ytlSJ_ajSKW5Z0Jnetmc4',
-  },
   loading: false,
   error: null,
   successLogin: false,
