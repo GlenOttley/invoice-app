@@ -218,10 +218,10 @@ const InvoiceEditForm = ({
         </Button>
       )}
 
+      {error && <Message severity='error'>{error}</Message>}
+
       {loading ? (
         <Loader />
-      ) : error ? (
-        <Message severity='error'>{error}</Message>
       ) : (
         invoice &&
         userInfo && (

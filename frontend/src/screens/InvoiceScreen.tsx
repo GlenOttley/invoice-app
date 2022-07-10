@@ -59,10 +59,10 @@ const InvoiceScreen = (): JSX.Element => {
         </Button>
       </Link>
 
+      {error && <Message severity='error'>{error}</Message>}
+
       {loading ? (
         <Loader />
-      ) : error ? (
-        <Message severity='error'>{error}</Message>
       ) : (
         userInfo &&
         !_.isEmpty(invoice) && (

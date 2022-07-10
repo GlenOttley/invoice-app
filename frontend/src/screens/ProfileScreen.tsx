@@ -1,31 +1,32 @@
 import {
-  Typography,
-  Grid,
   Box,
   Dialog,
   DialogActions,
+  Grid,
+  Typography,
   useTheme,
 } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-import { useAppDispatch, useAppSelector } from '../app/hooks'
-import CustomButton from '../components/CustomButton'
-import {
-  userUpdateReset,
-  selectUser,
-  updateUser,
-  deleteUser,
-  clearUser,
-} from '../features/user/userSlice'
-import { SubmitHandler, useForm, FormProvider } from 'react-hook-form'
-import ControlledInput from '../components/ControlledInput'
-import Loader from '../components/Loader'
-import Message from '../components/Message'
 import _ from 'lodash'
 import { useEffect, useState } from 'react'
-import IUser from '../interfaces/userInterface'
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form'
+import { useNavigate } from 'react-router-dom'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
+import ControlledInput from '../components/ControlledInput'
+import CustomButton from '../components/CustomButton'
 import CustomContainer from '../components/CustomContainer'
-import { clearInvoices } from '../features/invoices/invoicesSlice'
+import Loader from '../components/Loader'
+import Message from '../components/Message'
 import { clearInvoice } from '../features/invoices/invoiceSlice'
+import { clearInvoices } from '../features/invoices/invoicesSlice'
+import {
+  clearUser,
+  deleteUser,
+  selectUser,
+  updateUser,
+  userUpdateReset,
+  clearUserError,
+} from '../features/user/userSlice'
+import IUser from '../interfaces/userInterface'
 
 export interface IFormInput
   extends Omit<IUser, '_id' | 'invoices' | 'token' | 'image'> {}
@@ -85,6 +86,7 @@ const ProfileScreen = (): JSX.Element => {
   }
 
   useEffect(() => {
+    dispatch(clearUserError())
     if (successUpdate) {
       dispatch(userUpdateReset())
     }
@@ -100,8 +102,6 @@ const ProfileScreen = (): JSX.Element => {
     <div className='profile-screen'>
       {loading ? (
         <Loader />
-      ) : error ? (
-        <Message severity='error'>{error}</Message>
       ) : (
         <Box>
           <Typography variant='h2' marginBottom={3}>
@@ -270,6 +270,7 @@ const ProfileScreen = (): JSX.Element => {
           </Grid>
         </Box>
       )}
+      {error && <Message severity='error'>{error}</Message>}
       <Dialog
         open={showDeleteDialog}
         onClose={() => setShowDeleteDialog(false)}

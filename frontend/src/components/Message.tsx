@@ -6,7 +6,11 @@ interface IMessageProps {
 }
 
 const Message = ({ severity, children }: IMessageProps): JSX.Element => {
-  return <Alert severity={severity}>{children}</Alert>
+  return (
+    <Alert severity={severity} sx={{ margin: '32px 0' }}>
+      {children}
+    </Alert>
+  )
 }
 
 export default Message

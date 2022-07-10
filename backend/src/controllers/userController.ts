@@ -33,33 +33,41 @@ const authUser = asyncHandler(
 // @access  Private
 const updateUser = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
-    const user: SavedUserDocument | null = await User.findById(req.user._id)
-    if (user) {
-      user.name = req.body.name || user.name
-      user.email = req.body.email || user.email
-      user.address = {
-        street: req.body.address.street || user.address.street,
-        city: req.body.address.city || user.address.city,
-        postCode: req.body.address.postCode || user.address.postCode,
-        country: req.body.address.country || user.address.country,
-      }
-      if (req.body.password) {
-        user.password = req.body.password
-      }
-
-      const updatedUser: SavedUserDocument = await user.save()
-
-      res.json({
-        _id: updatedUser._id,
-        name: updatedUser.name,
-        image: updatedUser.image,
-        address: updatedUser.address,
-        email: updatedUser.email,
-        token: generateToken(updatedUser._id),
-      })
+    if (req.user._id === '61f5c55a8b500566a94331ae') {
+      res
+        .status(405)
+        .json(
+          "John Doe's details cannot be changed, please sign up as a new user if you wish to use this functionality"
+        )
     } else {
-      res.status(401)
-      throw new Error('User information not found in database')
+      const user: SavedUserDocument | null = await User.findById(req.user._id)
+      if (user) {
+        user.name = req.body.name || user.name
+        user.email = req.body.email || user.email
+        user.address = {
+          street: req.body.address.street || user.address.street,
+          city: req.body.address.city || user.address.city,
+          postCode: req.body.address.postCode || user.address.postCode,
+          country: req.body.address.country || user.address.country,
+        }
+        if (req.body.password) {
+          user.password = req.body.password
+        }
+
+        const updatedUser: SavedUserDocument = await user.save()
+
+        res.json({
+          _id: updatedUser._id,
+          name: updatedUser.name,
+          image: updatedUser.image,
+          address: updatedUser.address,
+          email: updatedUser.email,
+          token: generateToken(updatedUser._id),
+        })
+      } else {
+        res.status(401)
+        throw new Error('User information not found in database')
+      }
     }
   }
 )
@@ -106,16 +114,23 @@ const createUser = asyncHandler(async (req, res) => {
 // @access Private
 const deleteUser = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
-    User.findByIdAndDelete(
-      req.params.id,
-      (err: Error, docs: SavedUserDocument) => {
-        if (err) {
-          res.status(404).json('User not found')
-        } else {
-          res.status(200).json(`User with id: ${docs._id} has been deleted`)
+    if (req.params.id === '61f5c55a8b500566a94331ae') {
+      res
+        .status(405)
+        .json(
+          'John Doe cannot be deleted, please sign up as a new user if you wish to use this functionality'
+        )
+    } else
+      User.findByIdAndDelete(
+        req.params.id,
+        (err: Error, docs: SavedUserDocument) => {
+          if (err) {
+            res.status(404).json('User not found')
+          } else {
+            res.status(200).json(`User with id: ${docs._id} has been deleted`)
+          }
         }
-      }
-    )
+      )
   }
 )
 

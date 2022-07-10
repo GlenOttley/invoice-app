@@ -89,6 +89,7 @@ const Header = ({ mode, setMode }: IHeaderProps): JSX.Element => {
         >
           <button
             className='theme-button'
+            style={{ cursor: 'pointer' }}
             onClick={() => setMode(mode === 'light' ? 'dark' : 'light')}
           >
             <img

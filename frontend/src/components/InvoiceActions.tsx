@@ -26,7 +26,7 @@ const InvoiceActions = (): JSX.Element => {
   const navigate = useNavigate()
 
   const invoiceState = select(selectInvoice)
-  const { invoice } = invoiceState
+  const { invoice, successDelete } = invoiceState
 
   const [showEditForm, setShowEditForm] = useState<boolean>(false)
 
@@ -35,7 +35,7 @@ const InvoiceActions = (): JSX.Element => {
   const handleDelete = () => {
     setShowDeleteDialog(false)
     dispatch(deleteInvoice(invoice._id))
-    navigate('/')
+    successDelete && navigate('/')
   }
 
   const handleStatusChange = () => {

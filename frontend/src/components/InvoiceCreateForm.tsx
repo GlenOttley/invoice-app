@@ -37,6 +37,7 @@ import Message from './Message'
 import _ from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import {
+  clearInvoice,
   createInvoice,
   invoiceCreateReset,
   selectInvoice,
@@ -140,7 +141,7 @@ const InvoiceCreateForm = ({
   })
 
   const { userInfo, loading, error } = select(selectUser)
-  const { invoice, successCreate } = select(selectInvoice)
+  const { invoice, error: errorCreate, successCreate } = select(selectInvoice)
 
   const saveDraft = () => {
     const id = generateId()
@@ -201,6 +202,7 @@ const InvoiceCreateForm = ({
   }
 
   useEffect(() => {
+    dispatch(clearInvoice())
     if (successCreate) {
       dispatch(invoiceCreateReset())
       navigate(`/invoice/${invoice._id}`)
@@ -595,6 +597,7 @@ const InvoiceCreateForm = ({
                       + Add New Item
                     </CustomButton>
                   </Grid>
+
                   {validating && (
                     <Grid item xs={12} marginTop={4}>
                       <Typography variant='overline'>
@@ -606,6 +609,7 @@ const InvoiceCreateForm = ({
                     </Grid>
                   )}
                 </Grid>
+                <Grid container item justifyContent='center'></Grid>
                 <Grid container item justifyContent='space-between'>
                   <Grid item xs={3}>
                     <CustomButton
@@ -637,6 +641,7 @@ const InvoiceCreateForm = ({
           </Box>
         )
       )}
+      {errorCreate && <Message severity='error'>{errorCreate}</Message>}
     </Container>
   )
 }

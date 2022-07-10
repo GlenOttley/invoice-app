@@ -10,6 +10,7 @@ interface IInvoiceState {
   error: string | null
   successCreate: boolean
   successUpdate: boolean
+  successDelete: boolean
 }
 
 const initialState: IInvoiceState = {
@@ -18,6 +19,7 @@ const initialState: IInvoiceState = {
   error: null,
   successCreate: false,
   successUpdate: false,
+  successDelete: false,
 }
 
 export const getInvoice = createAsyncThunk(
@@ -133,6 +135,9 @@ export const invoiceSlice = createSlice({
     invoiceUpdateReset: (state) => {
       state.successUpdate = false
     },
+    invoiceDeleteReset: (state) => {
+      state.successDelete = false
+    },
   },
 
   extraReducers: (builder) => {
@@ -167,8 +172,8 @@ export const invoiceSlice = createSlice({
         state.loading = false
       })
       .addCase(createInvoice.rejected, (state, action: any) => {
-        if (action.create.payload) {
-          state.error = action.payload.message
+        if (action.payload) {
+          state.error = action.payload
         } else {
           state.error = action.error.message
         }
@@ -186,7 +191,7 @@ export const invoiceSlice = createSlice({
       })
       .addCase(updateInvoice.rejected, (state, action: any) => {
         if (action.payload) {
-          state.error = action.payload.message
+          state.error = action.payload
         } else {
           state.error = action.error.message
         }
@@ -204,7 +209,7 @@ export const invoiceSlice = createSlice({
       })
       .addCase(deleteInvoice.rejected, (state, action: any) => {
         if (action.payload) {
-          state.error = action.payload.message
+          state.error = action.payload
         } else {
           state.error = action.error.message
         }

@@ -64,31 +64,39 @@ const createInvoice = asyncHandler(
       total,
     } = req.body
 
-    const invoice: SavedInvoiceDocument = new Invoice({
-      _id,
-      createdAt,
-      paymentTerms,
-      paymentDue,
-      description,
-      status,
-      client: {
-        name: client.name,
-        email: client.email,
-        address: {
-          street: client.address.street,
-          city: client.address.city,
-          postCode: client.address.postcode,
-          country: client.address.country,
+    if (req.user._id === '61f5c55a8b500566a94331ae') {
+      res
+        .status(405)
+        .json(
+          'New invoices cannot be created for John Doe, please sign up as a new user if you wish to use this functionality'
+        )
+    } else {
+      const invoice: SavedInvoiceDocument = new Invoice({
+        _id,
+        createdAt,
+        paymentTerms,
+        paymentDue,
+        description,
+        status,
+        client: {
+          name: client.name,
+          email: client.email,
+          address: {
+            street: client.address.street,
+            city: client.address.city,
+            postCode: client.address.postcode,
+            country: client.address.country,
+          },
         },
-      },
-      sender: req.user._id,
-      items,
-      total,
-    })
-    console.log(invoice)
+        sender: req.user._id,
+        items,
+        total,
+      })
+      console.log(invoice)
 
-    const createdInvoice = await invoice.save()
-    res.status(201).json(createdInvoice)
+      const createdInvoice = await invoice.save()
+      res.status(201).json(createdInvoice)
+    }
   }
 )
 
@@ -108,22 +116,30 @@ const updateInvoice = asyncHandler(async (req: Request, res: Response) => {
     total,
   } = req.body
 
-  const invoice = await Invoice.findById(req.params.id)
-
-  if (invoice) {
-    invoice.createdAt = createdAt
-    invoice.paymentTerms = paymentTerms
-    invoice.paymentDue = paymentDue
-    invoice.description = description
-    invoice.status = status
-    invoice.client = client
-    invoice.items = items
-    invoice.total = total
-    const updatedInvoice = await invoice.save()
-    res.json(updatedInvoice)
+  if (req.user._id === '61f5c55a8b500566a94331ae') {
+    res
+      .status(405)
+      .json(
+        "John Doe's invoices cannot be edited, please sign up as a new user if you wish to use this functionality"
+      )
   } else {
-    res.status(404)
-    throw new Error('Invoice not found')
+    const invoice = await Invoice.findById(req.params.id)
+
+    if (invoice) {
+      invoice.createdAt = createdAt
+      invoice.paymentTerms = paymentTerms
+      invoice.paymentDue = paymentDue
+      invoice.description = description
+      invoice.status = status
+      invoice.client = client
+      invoice.items = items
+      invoice.total = total
+      const updatedInvoice = await invoice.save()
+      res.json(updatedInvoice)
+    } else {
+      res.status(404)
+      throw new Error('Invoice not found')
+    }
   }
 })
 
@@ -132,16 +148,26 @@ const updateInvoice = asyncHandler(async (req: Request, res: Response) => {
 // @access Private
 const deleteInvoice = asyncHandler(
   async (req: Request, res: Response): Promise<void> => {
-    Invoice.findByIdAndDelete(
-      req.params.id,
-      (err: Error, docs: SavedInvoiceDocument) => {
-        if (err) {
-          res.status(500).json(err)
-        } else {
-          res.status(200).json(`Invoice with id: ${docs._id} has been deleted`)
+    if (req.user._id === '61f5c55a8b500566a94331ae') {
+      res
+        .status(405)
+        .json(
+          "John Doe's invoices cannot be deleted, please sign up as a new user if you wish to use this functionality"
+        )
+    } else {
+      Invoice.findByIdAndDelete(
+        req.params.id,
+        (err: Error, docs: SavedInvoiceDocument) => {
+          if (err) {
+            res.status(500).json(err)
+          } else {
+            res
+              .status(200)
+              .json(`Invoice with id: ${docs._id} has been deleted`)
+          }
         }
-      }
-    )
+      )
+    }
   }
 )
 
