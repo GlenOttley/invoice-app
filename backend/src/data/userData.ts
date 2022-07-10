@@ -4,8 +4,8 @@ import IUser from '../interfaces/userInterface'
 const users: IUser[] = [
   {
     _id: '61f5c55a8b500566a94331ae',
-    name: 'Peninnah Arnold',
-    email: 'peninnaharnold@mail.com',
+    name: 'John Doe',
+    email: 'johndoe@mail.com',
     address: {
       street: '19 Union Terrace',
       city: 'London',
@@ -26,8 +26,8 @@ const users: IUser[] = [
   },
   {
     _id: '61f5c55a8b500566a94331af',
-    name: 'John Doe',
-    email: 'johndoe@mail.com',
+    name: 'Jane Doe',
+    email: 'janedoe@mail.com',
     address: {
       street: '254 Front St',
       city: 'New York',
