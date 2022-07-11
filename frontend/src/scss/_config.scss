@@ -90,3 +90,12 @@ a {
     }
   }
 }
+
+.icon {
+  width: 8px;
+  height: 8px;
+  &--caret-right {
+    background-image: url('../../public/assets/icons/caret-right.svg');
+    background-position: center;
+  }
+}

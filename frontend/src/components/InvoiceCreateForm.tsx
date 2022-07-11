@@ -37,10 +37,10 @@ import Message from './Message'
 import _ from 'lodash'
 import { useNavigate } from 'react-router-dom'
 import {
-  clearInvoice,
   createInvoice,
   invoiceCreateReset,
   selectInvoice,
+  clearInvoiceError,
 } from '../features/invoices/invoiceSlice'
 import generateId from '../utils/generateId'
 import toPriceValue from '../utils/toPriceValue'
@@ -202,7 +202,7 @@ const InvoiceCreateForm = ({
   }
 
   useEffect(() => {
-    dispatch(clearInvoice())
+    dispatch(clearInvoiceError())
     if (successCreate) {
       dispatch(invoiceCreateReset())
       navigate(`/invoice/${invoice._id}`)

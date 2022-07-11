@@ -129,6 +129,9 @@ export const invoiceSlice = createSlice({
       localStorage.removeItem('invoice')
       return initialState
     },
+    clearInvoiceError: (state) => {
+      state.error = null
+    },
     invoiceCreateReset: (state) => {
       state.successCreate = false
     },
@@ -220,6 +223,10 @@ export const invoiceSlice = createSlice({
 
 export const initialInvoiceState = invoiceSlice.getInitialState()
 export const selectInvoice = (state: RootState) => state.invoice
-export const { invoiceCreateReset, invoiceUpdateReset, clearInvoice } =
-  invoiceSlice.actions
+export const {
+  invoiceCreateReset,
+  invoiceUpdateReset,
+  clearInvoice,
+  clearInvoiceError,
+} = invoiceSlice.actions
 export default invoiceSlice.reducer

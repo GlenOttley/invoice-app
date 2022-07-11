@@ -1,27 +1,27 @@
+import {
+  Button,
+  Drawer,
+  Grid,
+  Typography,
+  useMediaQuery,
+  useTheme,
+} from '@mui/material'
+import _ from 'lodash'
+import Image from 'mui-image'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useAppSelector, useAppDispatch } from '../app/hooks'
-import { getInvoices, selectInvoices } from '../features/invoices/invoicesSlice'
-import { selectUser } from '../features/user/userSlice'
-import InvoicePreview from '../components/InvoicePreview'
+import { useAppDispatch, useAppSelector } from '../app/hooks'
 import FilterMenu from '../components/FilterMenu'
+import InvoiceCreateForm from '../components/InvoiceCreateForm'
+import InvoicePreview from '../components/InvoicePreview'
 import Loader from '../components/Loader'
 import Message from '../components/Message'
 import {
   selectFilteredInvoices,
   selectStatus,
 } from '../features/filters/filtersSlice'
-import {
-  useTheme,
-  useMediaQuery,
-  Typography,
-  Button,
-  Grid,
-  Drawer,
-} from '@mui/material'
-import Image from 'mui-image'
-import InvoiceCreateForm from '../components/InvoiceCreateForm'
-import _ from 'lodash'
+import { getInvoices, selectInvoices } from '../features/invoices/invoicesSlice'
+import { clearUserError, selectUser } from '../features/user/userSlice'
 
 const InvoicesScreen = (): JSX.Element => {
   const theme = useTheme()
@@ -47,8 +47,8 @@ const InvoicesScreen = (): JSX.Element => {
 
   const [showCreateForm, setShowCreateForm] = useState(false)
 
-  // fetch invoices if logged in
   useEffect(() => {
+    dispatch(clearUserError())
     if (!_.isEmpty(userInfo)) {
       dispatch(getInvoices())
     }

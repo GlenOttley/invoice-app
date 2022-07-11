@@ -46,12 +46,14 @@ const CustomContainer = styled(Container)<CustomContainerProps>(
     }),
     ...(version === 'xl' && {
       '&.MuiContainer-root': {
-        maxWidth: '730px',
         padding: theme.spacing(13, 3, 8, 3),
         [theme.breakpoints.up('md')]: {
+          boxSizing: 'content-box',
+          maxWidth: '672px',
           padding: theme.spacing(15, 6, 8, 6),
         },
         [theme.breakpoints.up('lg')]: {
+          maxWidth: '730px',
           padding: theme.spacing(8, 6, 8, 6),
         },
       },

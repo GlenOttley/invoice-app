@@ -67,8 +67,8 @@ const InvoiceEditForm = ({
   const dispatch = useAppDispatch()
   const navigate = useNavigate()
 
-  const { userInfo, loading, error } = select(selectUser)
-  const { invoice, successUpdate } = select(selectInvoice)
+  const { userInfo } = select(selectUser)
+  const { invoice, loading, error, successUpdate } = select(selectInvoice)
 
   const [validating, setValidating] = useState<boolean>(false)
 
