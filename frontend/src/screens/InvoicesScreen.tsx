@@ -72,10 +72,12 @@ const InvoicesScreen = (): JSX.Element => {
               color: 'text.secondary',
             }}
           >
-            {!useMediaQuery(theme.breakpoints.down('sm')) && (
+            {useMediaQuery(theme.breakpoints.up('sm')) && (
               <span>There are </span>
             )}
-            {!invoices ? 'No' : filteredInvoices.length} {status} invoices
+            {!invoices ? 'No' : filteredInvoices.length} {status}{' '}
+            {useMediaQuery(theme.breakpoints.up('sm')) && <span>total</span>}{' '}
+            invoices
           </Typography>
         </Grid>
         <Grid container item xs='auto' justifyContent='flex-end'>

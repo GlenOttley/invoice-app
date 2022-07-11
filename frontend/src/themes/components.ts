@@ -44,6 +44,7 @@ export const components = {
   MuiPaper: {
     styleOverrides: {
       root: {
+        backgroundImage: 'none',
         // boxShadow: '0 10px 20px 0 rgba(72, 84, 159, 0.25)',
       },
     },
