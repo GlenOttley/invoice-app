@@ -17,7 +17,7 @@ import { getDesignTokens } from './themes'
 import CustomContainer from './components/CustomContainer'
 
 const App = (): JSX.Element => {
-  const [mode, setMode] = useState<PaletteMode>('light')
+  const [mode, setMode] = useState<PaletteMode>('dark')
   const theme = useMemo(() => createTheme(getDesignTokens(mode)), [mode])
 
   return (
